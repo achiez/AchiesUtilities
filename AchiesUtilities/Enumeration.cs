@@ -11,12 +11,28 @@ public abstract class Enumeration : IComparable
 
     protected Enumeration(int id, string name) => (Id, Name) = (id, name);
 
-    public static IEnumerable<T> GetAll<T>() where T : Enumeration
+    public static IEnumerable<T> GetAllDeclared<T>() where T : Enumeration
     {
-        return 
-            typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+        return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
             .Select(f => f.GetValue(null))
             .Cast<T>();
+    }
+
+    public static IEnumerable<Enumeration> GetAllDeclared(Type type)
+    {
+        if (type.IsSubclassOf(typeof(Enumeration)) == false)
+            throw new InvalidOperationException("GetAll method can be used only on Enumeration");
+
+        return type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+            .Select(f => f.GetValue(null))
+            .Cast<Enumeration>();
+    }
+
+    public static IEnumerable<T> GetAll<T>() where T : Enumeration
+    {
+        return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static )
+                .Select(f => f.GetValue(null))
+                .Cast<T>();
     }
 
     public static IEnumerable<Enumeration> GetAll(Type type)
@@ -24,10 +40,9 @@ public abstract class Enumeration : IComparable
         if (type.IsSubclassOf(typeof(Enumeration)) == false)
             throw new InvalidOperationException("GetAll method can be used only on Enumeration");
 
-        return 
-            type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-            .Select(f => f.GetValue(null))
-            .Cast<Enumeration>();
+        return type.GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Select(f => f.GetValue(null))
+                .Cast<Enumeration>();
     }
 
     public override bool Equals(object? obj)

@@ -1,5 +1,8 @@
-﻿namespace AchiesUtilities;
+﻿using JetBrains.Annotations;
 
+namespace AchiesUtilities;
+
+[PublicAPI]
 public class PauseToken
 {
     /// <summary>
