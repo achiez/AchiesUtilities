@@ -1,6 +1,6 @@
 ﻿namespace AchiesUtilities;
 
-public static class Configuration
+public static class UtilitiesConfiguration
 {
     /// <summary>
     /// Default value - <b>100</b> ms

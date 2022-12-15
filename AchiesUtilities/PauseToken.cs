@@ -8,7 +8,7 @@ public class PauseToken
     /// <summary>
     /// Delay before each check
     /// </summary>
-    public int MsDelay { get; init; } = Configuration.DefaultPauseTokenDelay.Value;
+    public int MsDelay { get; init; } = UtilitiesConfiguration.DefaultPauseTokenDelay.Value;
     public bool IsPaused { get; private set; }
     public void AwaitPause(CancellationToken cancellationToken, Action? onPauseAction = null, Action? onPauseEnds = null)
     {

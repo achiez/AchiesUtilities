@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	  <RepositoryUrl>
-		  https://github.com/achiez/*REPO NAME*/
+		  https://github.com/achiez/AchiesUtilities
 	  </RepositoryUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
