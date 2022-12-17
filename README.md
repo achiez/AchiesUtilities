@@ -13,5 +13,5 @@
 
 | Collection | Description |
 |-----|---------------|
-|ObservableDictionary| ObservableCollection with indexing |
+|ObservableDictionary| INotifyPropertyChanged dictionary with indexing |
 |ReadOnlyObservableDictionary| ReadOnly version |
