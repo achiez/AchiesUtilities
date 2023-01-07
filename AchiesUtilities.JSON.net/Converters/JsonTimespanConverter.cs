@@ -2,7 +2,7 @@
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters;
 
-public class TimespanConverter : JsonConverter<TimeSpan>
+public class JsonTimespanConverter : JsonConverter<TimeSpan>
 {
     /// <summary>
     /// Format: Days.Hours:Minutes:Seconds:Milliseconds
@@ -21,7 +21,7 @@ public class TimespanConverter : JsonConverter<TimeSpan>
             throw new NullReferenceException("JsonReader value was null");
 
         if(TimeSpan.TryParseExact(value, TimeSpanFormatString, null, out var parsedTimeSpan) == false)
-            throw new FormatException("Can't parse TimeSpan from json format");
+            throw new FormatException($"Can't parse TimeSpan from provided json {value}");
 
         return parsedTimeSpan;
     }

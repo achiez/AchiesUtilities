@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AchiesUtilities;
 
@@ -14,14 +14,20 @@ public enum UnixFormat
     Nanoseconds
 }
 [PublicAPI]
+[Serializable]
+[DebuggerDisplay("{Ticks}")]
 public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse 
 {
     private static DateTime Epoch => DateTime.UnixEpoch;
     public static readonly UnixTimeStamp Zero = FromDateTime(Epoch);
 
-    public readonly TimeSpan TimeSpan;
+    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore] public readonly TimeSpan TimeSpan;
+    [JsonIgnore] public DateTime Time => ToUtcDateTime();
     public long Ticks => TimeSpan.Ticks;
 
+    [System.Text.Json.Serialization.JsonConstructor]
+    [JsonConstructor]
     public UnixTimeStamp(long ticks)
     {
         TimeSpan = new TimeSpan(ticks);
@@ -62,9 +68,9 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     {
         return format switch
         {
-            UnixFormat.Seconds => timeSpan.Seconds,
-            UnixFormat.Milliseconds => timeSpan.Milliseconds,
-            UnixFormat.Microseconds => timeSpan.Milliseconds * 1000,
+            UnixFormat.Seconds => (long)timeSpan.TotalSeconds,
+            UnixFormat.Milliseconds => (long)timeSpan.TotalMilliseconds,
+            UnixFormat.Microseconds => (long)timeSpan.TotalMilliseconds * 1000,
             UnixFormat.Nanoseconds => timeSpan.Ticks,
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
@@ -110,7 +116,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     }
     public override string ToString()
     {
-        return TimeSpan.ToString();
+        return Ticks.ToString();
     }
     #endregion
 
