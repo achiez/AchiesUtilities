@@ -1,8 +1,10 @@
-﻿using JetBrains.Annotations;
+﻿using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities;
 
 [PublicAPI]
+[Serializable]
 public struct CachedItem<T>
 {
     public T Value { get; }
@@ -15,12 +17,14 @@ public struct CachedItem<T>
     }
     private bool _expired = false;
 
-    public CachedItem(T item) : this(item, expiresAt: DateTime.MaxValue)
+    public CachedItem(T value) : this(value, expiresAt: DateTime.MaxValue)
     { }
 
-    public CachedItem(T item, DateTime expiresAt, DateTime? cachedAt = null)
+    [Newtonsoft.Json.JsonConstructor]
+    [JsonConstructor]
+    public CachedItem(T value, DateTime expiresAt, DateTime? cachedAt = null)
     {
-        Value = item;
+        Value = value;
         ExpiresAt = expiresAt;
         CachedAt = cachedAt ?? DateTime.Now;
     }
