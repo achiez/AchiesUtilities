@@ -1,5 +1,8 @@
-﻿namespace AchiesUtilities;
+﻿using JetBrains.Annotations;
 
+namespace AchiesUtilities;
+
+[PublicAPI]
 public class CachedItem<T>
 {
     public T Value { get; }
@@ -12,7 +15,7 @@ public class CachedItem<T>
     }
     private bool _expired = false;
 
-    public CachedItem(T item)
+    public CachedItem(T item) : this(item, expiresAt: DateTime.MaxValue)
     {
         Value = item;
         ExpiresAt = DateTime.MaxValue;
@@ -24,5 +27,4 @@ public class CachedItem<T>
         ExpiresAt = expiresAt;
         CachedAt = cachedAt ?? DateTime.Now;
     }
-
 }
