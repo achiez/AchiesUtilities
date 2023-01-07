@@ -1,4 +1,6 @@
-﻿namespace AchiesUtilities.Extensions;
+﻿using System;
+
+namespace AchiesUtilities.Extensions;
 
 public static class ExceptionExtension
 {
