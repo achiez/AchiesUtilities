@@ -8,8 +8,8 @@
 		  https://github.com/achiez/AchiesUtilities/
 	  </RepositoryUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>1.0.5</AssemblyVersion>
-	  <Version>1.0.5</Version>
+	  <AssemblyVersion>1.0.6</AssemblyVersion>
+	  <Version>1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -11,7 +11,7 @@ public enum UnixFormat
     Seconds,
     Milliseconds,
     Microseconds,
-    Nanoseconds
+    Ticks
 }
 [PublicAPI]
 [Serializable]
@@ -45,7 +45,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
             UnixFormat.Seconds => TimeSpan.FromSeconds(unix),
             UnixFormat.Milliseconds => TimeSpan.FromMilliseconds(unix),
             UnixFormat.Microseconds => TimeSpan.FromMilliseconds(unix) * 1000,
-            UnixFormat.Nanoseconds => new TimeSpan(unix),
+            UnixFormat.Ticks => new TimeSpan(unix),
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
     }
@@ -71,7 +71,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
             UnixFormat.Seconds => (long)timeSpan.TotalSeconds,
             UnixFormat.Milliseconds => (long)timeSpan.TotalMilliseconds,
             UnixFormat.Microseconds => (long)timeSpan.TotalMilliseconds * 1000,
-            UnixFormat.Nanoseconds => timeSpan.Ticks,
+            UnixFormat.Ticks => timeSpan.Ticks,
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
     }

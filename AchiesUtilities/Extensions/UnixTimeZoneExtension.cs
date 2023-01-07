@@ -16,7 +16,7 @@ public static class UnixTimeZoneExtension
             UnixFormat.Seconds => timespan.Seconds,
             UnixFormat.Milliseconds => timespan.Milliseconds,
             UnixFormat.Microseconds => timespan.Milliseconds * 1000,
-            UnixFormat.Nanoseconds => timespan.Ticks,
+            UnixFormat.Ticks => timespan.Ticks,
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
     }
