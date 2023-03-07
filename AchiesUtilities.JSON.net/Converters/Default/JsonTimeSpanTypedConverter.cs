@@ -1,21 +1,21 @@
 ﻿using Newtonsoft.Json;
 
-namespace AchiesUtilities.Newtonsoft.JSON.Converters;
+namespace AchiesUtilities.Newtonsoft.JSON.Converters.Default;
 
-public class JsonTimespanConverter : JsonConverter<TimeSpan>
+public class JsonTimeSpanTypedConverter : JsonConverter<TimeSpan>
 {
     public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
     {
-        var timespanFormatted = value.Ticks;
-        writer.WriteValue(timespanFormatted);
+        serializer.Serialize(writer, JsonTimeSpan.FromTimeSpan(value));
+
     }
 
     public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
-        if (reader.Value is not long value)
+        if (reader.Value is not JsonTimeSpan value)
             throw new NullReferenceException("JsonReader value was null or not long");
 
 
-        return new TimeSpan(value);
+        return value.ToTimeSpan();
     }
 }

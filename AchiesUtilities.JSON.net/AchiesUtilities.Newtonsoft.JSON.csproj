@@ -8,8 +8,8 @@
 		  https://github.com/achiez/AchiesUtilities/
 	  </RepositoryUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.1.1</Version>
-	  <AssemblyVersion>1.1.1</AssemblyVersion>
+	  <Version>1.1.2</Version>
+	  <AssemblyVersion>1.1.2</AssemblyVersion>
   </PropertyGroup>
 
 
@@ -20,6 +20,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AchiesUtilities\AchiesUtilities.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Converters\Special\" />
   </ItemGroup>
 
 </Project>

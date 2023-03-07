@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace AchiesUtilities.Newtonsoft.JSON.Converters;
+namespace AchiesUtilities.Newtonsoft.JSON.Converters.Default;
 
 public class UnixTimeStampConverter : JsonConverter<UnixTimeStamp>
 {
