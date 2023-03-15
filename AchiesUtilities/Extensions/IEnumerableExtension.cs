@@ -43,7 +43,7 @@ public static class IEnumerableExtension
     }
 
     /// <summary>
-    /// O(1) method
+    /// Fast method
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="first"></param>
@@ -60,7 +60,7 @@ public static class IEnumerableExtension
     }
 
     /// <summary>
-    /// O(1) method
+    /// Average speed
     /// </summary>
     /// <typeparam name="TK"></typeparam>
     /// <typeparam name="TV"></typeparam>
@@ -85,6 +85,32 @@ public static class IEnumerableExtension
                 if (valueComparer.Equals(kvp.Value, value) == false) return false;
             }
             else
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    /// <summary>
+    /// Fast method
+    /// </summary>
+    /// <typeparam name="TK"></typeparam>
+    /// <typeparam name="TV"></typeparam>
+    /// <param name="first"></param>
+    /// <param name="second"></param>
+    /// <param name="keyComparer"></param>
+    /// <returns></returns>
+    public static bool CompareToOtherByKey<TK, TV>(this IDictionary<TK, TV> first, IDictionary<TK, TV> second,
+        EqualityComparer<TK>? keyComparer = null) where TK : notnull
+    {
+        if (first.Count != second.Count) return false;
+        var copyFirst = new Dictionary<TK, TV>(first, keyComparer);
+        var copySecond = new Dictionary<TK, TV>(second, keyComparer);
+
+        foreach (var kvp in copyFirst)
+        {
+            if (copySecond.TryGetValue(kvp.Key, out _) == false)
             {
                 return false;
             }

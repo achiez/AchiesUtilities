@@ -1,6 +1,10 @@
-﻿namespace AchiesUtilities.Extensions;
+﻿using AchiesUtilities.Models;
+using JetBrains.Annotations;
+
+namespace AchiesUtilities.Extensions;
 
 
+[PublicAPI]
 /// <summary>
 /// Class with extensions which helps when some service provides TimeStamp with offset according to its timezone
 /// </summary>

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using JetBrains.Annotations;
 
-namespace AchiesUtilities;
+namespace AchiesUtilities.Models;
 
 [PublicAPI]
 public abstract class Enumeration : IComparable
@@ -30,7 +30,7 @@ public abstract class Enumeration : IComparable
 
     public static IEnumerable<T> GetAll<T>() where T : Enumeration
     {
-        return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static )
+        return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static)
                 .Select(f => f.GetValue(null))
                 .Cast<T>();
     }

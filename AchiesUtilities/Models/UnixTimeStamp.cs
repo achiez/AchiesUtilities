@@ -4,7 +4,7 @@ using System.Globalization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace AchiesUtilities;
+namespace AchiesUtilities.Models;
 
 public enum UnixFormat
 {
@@ -57,9 +57,9 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     /// <param name="unix"></param>
     /// <param name="format"></param>
     /// <param name="unixTimeZone"></param>
-    public UnixTimeStamp(long unix, UnixFormat format, TimeZoneInfo unixTimeZone) 
+    public UnixTimeStamp(long unix, UnixFormat format, TimeZoneInfo unixTimeZone)
         : this(unix + unixTimeZone.BaseUtcOffset.Ticks, format)
-    {}
+    { }
 
     #region GetLong
 

@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace AchiesUtilities;
+namespace AchiesUtilities.Models;
 
 [PublicAPI]
 public class SetOnceProperty<T>
