@@ -12,10 +12,12 @@ public class JsonTimeSpanTypedConverter : JsonConverter<TimeSpan>
 
     public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
-        if (reader.Value is not JsonTimeSpan value)
-            throw new NullReferenceException("JsonReader value was null or not long");
-
-
-        return value.ToTimeSpan();
+        while (reader.TokenType != JsonToken.Integer)
+        {
+            reader.Read();
+        }
+        var ticks = (long)reader.Value;
+        reader.Read();
+        return new TimeSpan(ticks);
     }
 }

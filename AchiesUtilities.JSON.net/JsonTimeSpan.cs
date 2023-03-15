@@ -9,7 +9,7 @@ public struct JsonTimeSpan
         Ticks = ticks;
     }
 
-    public TimeSpan ToTimeSpan( )
+    public TimeSpan ToTimeSpan()
     {
         return new TimeSpan(Ticks);
     }
@@ -17,6 +17,7 @@ public struct JsonTimeSpan
     public static JsonTimeSpan FromTimeSpan(TimeSpan timeSpan)
     {
         return new JsonTimeSpan(timeSpan.Ticks);
+        
     }
 
     public static implicit operator TimeSpan(JsonTimeSpan value) => value.ToTimeSpan();

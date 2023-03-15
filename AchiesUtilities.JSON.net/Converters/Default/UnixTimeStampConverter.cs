@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AchiesUtilities.Models;
+using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Default;
 
