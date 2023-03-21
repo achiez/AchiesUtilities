@@ -7,13 +7,14 @@ namespace AchiesUtilities.Web.Proxy;
 [PublicAPI]
 public class DynamicProxy : IWebProxy
 {
-    public Uri Address { get; private set; }
-    public ProxyData Data
+ 
+    public Uri? Address { get; private set; }
+    public ProxyData? Data
     {
         get => _data;
         set => SetData(value);
     }
-    private ProxyData _data;
+    private ProxyData? _data;
     public HashSet<string> BypassHosts { get; init; } = new();
 
     /// <summary>
@@ -27,16 +28,15 @@ public class DynamicProxy : IWebProxy
 
     private ICredentials? _credentials;
 
-    public DynamicProxy(ProxyData data)
+    public DynamicProxy(ProxyData? data)
     {
         SetData(data);
     }
 
-    [MemberNotNull(nameof(_data))]
-    [MemberNotNull(nameof(Address))]
-    public void SetData(ProxyData data)
+    public void SetData(ProxyData? data)
     {
         _data = data;
+        if(_data == null) return;
         var address = _data.ToString();
         Address = new Uri(address);
         if (_data.AuthEnabled)
@@ -45,7 +45,7 @@ public class DynamicProxy : IWebProxy
         }
     }
 
-    public Uri GetProxy(Uri destination)
+    public Uri? GetProxy(Uri destination)
     {
         return IsBypassed(destination) ? destination : Address;
     }
