@@ -121,6 +121,8 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     #endregion
 
     #region Operators
+
+    #region Equality
     public static bool operator ==(UnixTimeStamp left, UnixTimeStamp right) => left.Ticks == right.Ticks;
     public static bool operator !=(UnixTimeStamp left, UnixTimeStamp right) => !(left == right);
     public static bool operator >(UnixTimeStamp left, UnixTimeStamp right) => left.Ticks > right.Ticks;
@@ -128,10 +130,28 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     public static bool operator >=(UnixTimeStamp left, UnixTimeStamp right) => left.Ticks >= right.Ticks;
     public static bool operator <=(UnixTimeStamp left, UnixTimeStamp right) => left.Ticks <= right.Ticks;
 
+    #endregion
+
+    #region Unix&TimeSpan
+
     public static UnixTimeStamp operator +(UnixTimeStamp left, TimeSpan right) => new(left.TimeSpan + right);
+    public static UnixTimeStamp operator -(UnixTimeStamp left, TimeSpan right) => new(left.TimeSpan - right);
+
+    #endregion
+
+    #region Unix&Unix
+
     public static TimeSpan operator -(UnixTimeStamp left, UnixTimeStamp right) => left.TimeSpan - right.TimeSpan;
+
+    #endregion
+
+    #region Unix&DateTime
     public static TimeSpan operator -(DateTime left, UnixTimeStamp right) => left.ToUniversalTime() - right.ToUtcDateTime();
     public static TimeSpan operator -(UnixTimeStamp left, DateTime right) => left.ToUtcDateTime() - right.ToUniversalTime();
+
+
+    #endregion
+
 
     #endregion
 }
