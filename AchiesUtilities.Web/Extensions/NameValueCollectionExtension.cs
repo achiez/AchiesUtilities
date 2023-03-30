@@ -12,7 +12,7 @@ public static class NameValueCollectionExtension
         foreach (var kvp in collection)
         {
             var key = encode ? HttpUtility.UrlEncode(kvp.Key) : kvp.Key;
-            var value = encode ? HttpUtility.UrlEncode(kvp.Value) : kvp.Key;
+            var value = encode ? HttpUtility.UrlEncode(kvp.Value) : kvp.Value;
             sb.Append(key);
             sb.Append('=');
             sb.Append(value);
