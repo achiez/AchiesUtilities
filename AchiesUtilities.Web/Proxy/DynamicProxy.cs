@@ -1,13 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using JetBrains.Annotations;
 using System.Net;
-using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web.Proxy;
 
 [PublicAPI]
 public class DynamicProxy : IWebProxy
 {
- 
+
     public Uri? Address { get; private set; }
     public ProxyData? Data
     {
@@ -36,7 +35,12 @@ public class DynamicProxy : IWebProxy
     public void SetData(ProxyData? data)
     {
         _data = data;
-        if(_data == null) return;
+        if (_data == null)
+        {
+            Address = null;
+            return;
+        };
+
         var address = _data.ToString();
         Address = new Uri(address);
         if (_data.AuthEnabled)

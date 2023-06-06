@@ -154,4 +154,23 @@ public class ProxyData
     {
         return input.Contains(value, StringComparison.InvariantCultureIgnoreCase);
     }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is ProxyData p && Equals(p);
+    }
+
+    protected bool Equals(ProxyData other)
+    {
+        return Type == other.Type 
+               && Address == other.Address 
+               && Port == other.Port 
+               && Username == other.Username 
+               && Password == other.Password;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine((int) Type, Address, Port, Username, Password);
+    }
 }
