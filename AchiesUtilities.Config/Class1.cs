@@ -1,7 +1,2 @@
-﻿namespace AchiesUtilities.Config
-{
-    public class Class1
-    {
+﻿namespace AchiesUtilities.Config;
 
-    }
-}

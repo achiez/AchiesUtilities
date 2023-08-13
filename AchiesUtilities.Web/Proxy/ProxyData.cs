@@ -7,16 +7,16 @@ namespace AchiesUtilities.Web.Proxy;
 [PublicAPI]
 public class ProxyData
 {
-    public ProxyType Type { get; }
+    public ProxyProtocol Protocol { get; }
     public string Address { get; }
     public int Port { get; }
     public string? Username { get; }
     public string? Password { get; }
     public bool AuthEnabled => Username != null;
 
-    public ProxyData(ProxyType type, string address, int port, string? username = null, string? password = null)
+    public ProxyData(ProxyProtocol protocol, string address, int port, string? username = null, string? password = null)
     {
-        Type = type;
+        Protocol = protocol;
         Address = address;
         Port = port;
         Username = username;
@@ -73,7 +73,7 @@ public class ProxyData
         var port = Convert.ToInt32(match.Groups["port"].Value);
         string? user = null;
         string? pass = null;
-        var type = ProxyType.HTTP;
+        var type = ProxyProtocol.HTTP;
         if (hasCred)
         {
             user = match.Groups["user"].Value;
@@ -83,17 +83,17 @@ public class ProxyData
         if (hasType)
         {
             var typeMatch = match.Groups["type"].Value;
-            type = Enum.Parse<ProxyType>(typeMatch, true);
+            type = Enum.Parse<ProxyProtocol>(typeMatch, true);
         }
         else
         {
             if (Contains(str, "socks5"))
             {
-                type = ProxyType.SOCKS5;
+                type = ProxyProtocol.SOCKS5;
             }
             else if (Contains(str, "socks4"))
             {
-                type = ProxyType.SOCKS4;
+                type = ProxyProtocol.SOCKS4;
             }
         }
 
@@ -119,7 +119,7 @@ public class ProxyData
 
         if (Contains(pattern, "{TYPE}"))
         {
-            pattern = Replace(pattern, "{TYPE}", Type.ToString().ToLower());
+            pattern = Replace(pattern, "{TYPE}", Protocol.ToString().ToLower());
         }
 
         return pattern;
@@ -162,7 +162,7 @@ public class ProxyData
 
     protected bool Equals(ProxyData other)
     {
-        return Type == other.Type 
+        return Protocol == other.Protocol 
                && Address == other.Address 
                && Port == other.Port 
                && Username == other.Username 
@@ -171,6 +171,6 @@ public class ProxyData
 
     public override int GetHashCode()
     {
-        return HashCode.Combine((int) Type, Address, Port, Username, Password);
+        return HashCode.Combine((int) Protocol, Address, Port, Username, Password);
     }
 }

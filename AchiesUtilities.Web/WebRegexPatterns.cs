@@ -1,0 +1,18 @@
+﻿using System.Text.RegularExpressions;
+using JetBrains.Annotations;
+
+namespace AchiesUtilities.Web;
+
+public class WebRegexPatterns
+{
+    [RegexPattern]
+    public static string DomainNamePattern = @"((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}";
+
+    [RegexPattern] public static string IPv4Pattern =
+        @"(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)";
+
+    [RegexPattern]
+    public static string ProtocolPattern = "(?:(?i)(?:https|http|socks5|socks4))";
+
+
+}

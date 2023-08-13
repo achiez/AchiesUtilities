@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AchiesUtilities.WPF", "Achi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "TestConsole\TestConsole.csproj", "{FB305F71-8E3A-4BE1-BFF6-087EBE09E41B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AchiesUtilities.Config", "AchiesUtilities.Config\AchiesUtilities.Config.csproj", "{1991C887-559D-4F44-AE37-FE8888FB24C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AchiesUtilities.Config", "AchiesUtilities.Config\AchiesUtilities.Config.csproj", "{1991C887-559D-4F44-AE37-FE8888FB24C9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AchiesUtilities.Commands", "AchiesUtilities.Commands\AchiesUtilities.Commands.csproj", "{C97FAE95-0ECB-46E7-AD9B-693F95F0EC20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{1991C887-559D-4F44-AE37-FE8888FB24C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1991C887-559D-4F44-AE37-FE8888FB24C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1991C887-559D-4F44-AE37-FE8888FB24C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C97FAE95-0ECB-46E7-AD9B-693F95F0EC20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C97FAE95-0ECB-46E7-AD9B-693F95F0EC20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C97FAE95-0ECB-46E7-AD9B-693F95F0EC20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C97FAE95-0ECB-46E7-AD9B-693F95F0EC20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
