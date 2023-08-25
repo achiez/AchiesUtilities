@@ -1,4 +1,4 @@
-﻿using AchiesUtilities.Newtonsoft.JSON.Converters.Default;
+﻿using AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 using AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -18,7 +18,7 @@ public static class StaticConverters
 
     #region Special
 
-    public static IntToBoolConverter IntToBoolConverter { get; } = new();
+    public static BoolToIntConverter BoolToIntConverter { get; } = new();
     public static JsonTimeSpanTypedConverter TimeSpanTypedConverter { get; } = new();
     #endregion
 

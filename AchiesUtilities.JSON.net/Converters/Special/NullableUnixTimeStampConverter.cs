@@ -1,7 +1,7 @@
 ﻿using AchiesUtilities.Models;
 using Newtonsoft.Json;
 
-namespace AchiesUtilities.Newtonsoft.JSON.Converters.Default;
+namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 
 
 public class NullableUnixTimeStampConverter : JsonConverter<UnixTimeStamp?>

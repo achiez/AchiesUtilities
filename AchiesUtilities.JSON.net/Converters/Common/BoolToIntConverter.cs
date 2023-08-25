@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
+namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
-public class IntToBoolConverter : JsonConverter<bool>
+public class BoolToIntConverter : JsonConverter<bool>
 {
     public override void WriteJson(JsonWriter writer, bool value, JsonSerializer serializer)
     {
