@@ -175,8 +175,6 @@ public class ProxyScheme
 
 
     }
-
-
     private string? ParseHost(Match match, bool trying)
     {
         var group = match.Groups[SchemeGroups.Host];
@@ -192,7 +190,7 @@ public class ProxyScheme
         if (parsed == UriHostNameType.Unknown)
         {
             if (trying) return null;
-            throw new FormatException($"Error while parsing ProxyData. Host '{parsed}' format of  is Unknown");
+            throw new FormatException($"Error while parsing ProxyData. Host '{parsed}' format is Unknown");
         };
 
 
@@ -218,7 +216,6 @@ public class ProxyScheme
             };
         }
     }
-
     private int? ParsePort(Match match, bool trying)
     {
         var group = match.Groups[SchemeGroups.Port];
@@ -235,12 +232,9 @@ public class ProxyScheme
         if (trying) return null;
         throw new FormatException($"Error while parsing ProxyData. Provided port {input} is not valid Port");
     }
-
     private string? ParseCredential(Match match, string groupName)
     {
         var group = match.Groups[groupName];
         return group.Success ? group.Value : null;
     }
-
-
 }

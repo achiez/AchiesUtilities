@@ -12,7 +12,9 @@ public class ProxyData
     public int Port { get; }
     public string? Username { get; }
     public string? Password { get; }
-    public bool AuthEnabled => Username != null;
+
+    [MemberNotNullWhen(true, nameof(Username), nameof(Password))]
+    public bool AuthEnabled => Username != null && Password != null;
 
     public ProxyData(ProxyProtocol protocol, string address, int port, string? username = null, string? password = null)
     {
