@@ -2,5 +2,9 @@
 
 public enum ProxyProtocol
 {
-    HTTP, HTTPS, SOCKS4, SOCKS5
+    HTTP,
+    [Obsolete("Not supported in .NET")]
+    HTTPS, 
+    SOCKS4, 
+    SOCKS5
 }

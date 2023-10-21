@@ -35,7 +35,7 @@ public static class ProxyDefaultFormats
                     + ":"
                     + _port
                     + "(?::" + _user + ":" + _pass + ")?"
-                    + "[^:]$");
+                    + "$");
 
 
     /// <summary>

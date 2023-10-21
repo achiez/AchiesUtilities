@@ -74,7 +74,7 @@ internal class ProxyCredentials : ICredentials
     private string? _username;
     private string? _password;
 
-    private NetworkCredential Credential => _credential ?? new NetworkCredential(_username, _password);
+    private NetworkCredential Credential => _credential ??= new NetworkCredential(_username, _password);
     private NetworkCredential? _credential;
     private bool _isSet;
 
