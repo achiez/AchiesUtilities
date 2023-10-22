@@ -10,6 +10,24 @@ public class InvalidResponseException : Exception
     public string? Response => _response ??= ResponseContent?.ReadAsStringSync();
     private string? _response;
 
+    public InvalidResponseException(string? responseContent)
+    {
+        _response = responseContent;
+    }
+
+    public InvalidResponseException(string? responseContent, string message) : base(message)
+    {
+        _response = responseContent;
+    }
+
+    public InvalidResponseException(string? responseContent, string message, Exception inner) : base(message,
+        inner)
+    {
+        _response = responseContent;
+    }
+
+
+
     public InvalidResponseException(HttpContent? responseContent)
     {
         ResponseContent = responseContent;
