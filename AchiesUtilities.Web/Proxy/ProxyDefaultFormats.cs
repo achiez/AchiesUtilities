@@ -7,12 +7,12 @@ public static class ProxyDefaultFormats
 {
     [RegexPattern]
     private static readonly string _protocol =
-        $"(?<{ProxyScheme.SchemeGroups.Protocol}>{WebRegexPatterns.ProtocolPattern})";
+        $"(?<{ProxyScheme.SchemeGroups.Protocol}>{RegexWebPatterns.ProtocolPattern})";
 
     [RegexPattern]
     private static readonly string _proxyHost = $@"(?<{ProxyScheme.SchemeGroups.Host}>"
-                                                + $"(?:{WebRegexPatterns.IPv4Pattern})|"
-                                                + $"(?:{WebRegexPatterns.DomainNamePattern})|"
+                                                + $"(?:{RegexWebPatterns.IPv4Pattern})|"
+                                                + $"(?:{RegexWebPatterns.DomainNamePattern})|"
                                                 + "(?:localhost)"
                                                 + ')';
     [RegexPattern]

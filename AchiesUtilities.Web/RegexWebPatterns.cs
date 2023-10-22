@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web;
 
-public class WebRegexPatterns
+public class RegexWebPatterns
 {
     [RegexPattern]
     public static string DomainNamePattern = @"((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}";
@@ -13,6 +13,5 @@ public class WebRegexPatterns
 
     [RegexPattern]
     public static string ProtocolPattern = "(?:(?i)(?:https|http|socks5|socks4))";
-
-
+    
 }

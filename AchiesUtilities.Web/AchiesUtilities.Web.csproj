@@ -4,8 +4,8 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<AssemblyVersion>1.0.9</AssemblyVersion>
-		<Version>1.0.9</Version>
+		<AssemblyVersion>1.0.10</AssemblyVersion>
+		<Version>1.0.10</Version>
 		<RepositoryUrl>
 			https://github.com/achiez/AchiesUtilities/
 		</RepositoryUrl>
@@ -15,7 +15,6 @@
 	<ItemGroup>
 		<Folder Include="Models\" />
 		<Folder Include="Builder\" />
-		<Folder Include="Extensions\" />
 	</ItemGroup>
 
 	<ItemGroup>
