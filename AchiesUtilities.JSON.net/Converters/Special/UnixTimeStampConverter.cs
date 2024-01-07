@@ -24,4 +24,5 @@ public class UnixTimeStampConverter : JsonConverter<UnixTimeStamp>
 
         return new UnixTimeStamp(value, Format ?? DefaultFormat);
     }
+
 }
