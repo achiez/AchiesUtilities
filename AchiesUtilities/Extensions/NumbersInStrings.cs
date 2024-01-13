@@ -1,13 +1,14 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace AchiesUtilities.Strings;
+namespace AchiesUtilities.Extensions;
 
 [PublicAPI]
 public static class NumbersInStrings
 {
    
-    private static readonly Regex Regex = new("(\\D+)");
+    private static readonly Regex Regex = new("(\\d+)");
 
     /// <exception cref="FormatException"></exception>
     public static int ExtractNumeral(this string str)
@@ -16,7 +17,9 @@ public static class NumbersInStrings
         {
             return result;
         }
-        throw new FormatException("Provided string does not contain digits");
+
+        Throw(str);
+        return default; //Never reached
     }
 
     /// <exception cref="FormatException"></exception>
@@ -26,7 +29,8 @@ public static class NumbersInStrings
         {
             return result;
         }
-        throw new FormatException("Provided string does not contain digits");
+        Throw(str);
+        return default; //Never reached
     }
 
     /// <exception cref="FormatException"></exception>
@@ -36,7 +40,8 @@ public static class NumbersInStrings
         {
             return result;
         }
-        throw new FormatException("Provided string does not contain digits");
+        Throw(str);
+        return default; //Never reached
     }
 
     /// <exception cref="FormatException"></exception>
@@ -46,7 +51,8 @@ public static class NumbersInStrings
         {
             return result;
         }
-        throw new FormatException("Provided string does not contain digits");
+        Throw(str);
+        return default; //Never reached
     }
 
 
@@ -89,5 +95,18 @@ public static class NumbersInStrings
             result = default;
             return false;
         }
+    }
+
+    [DoesNotReturn]
+    private static void Throw(string str)
+    {
+        string msg;
+        msg = str.Length > 100 ? "Provided string does not contain numerals. Provided string stored in Data" 
+            : $"Provided string '{str}' does not contain numerals";
+
+        throw new FormatException(msg)
+        {
+            Data = {{"ProvidedString", str}}
+        };
     }
 }

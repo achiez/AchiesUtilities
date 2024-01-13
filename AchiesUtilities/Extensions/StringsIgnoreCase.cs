@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace AchiesUtilities.Strings;
+namespace AchiesUtilities.Extensions;
 
 [PublicAPI]
 public static class StringsIgnoreCase
