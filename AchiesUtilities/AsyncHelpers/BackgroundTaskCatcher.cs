@@ -1,7 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using JetBrains.Annotations;
+using System.Collections.Concurrent;
 
 namespace AchiesUtilities.AsyncHelpers;
 
+[PublicAPI]
 public class BackgroundTaskCatcher : IAsyncDisposable
 {
     private readonly ConcurrentQueue<Task> _tasks = new();

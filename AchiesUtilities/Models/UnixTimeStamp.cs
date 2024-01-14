@@ -1,8 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace AchiesUtilities.Models;
 
@@ -13,9 +11,10 @@ public enum UnixFormat
     Microseconds,
     Ticks
 }
+
 [PublicAPI]
 [Serializable]
-[DebuggerDisplay("{Ticks}")]
+[DebuggerDisplay("{Seconds}")]
 public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse 
 {
     private static DateTime Epoch => DateTime.UnixEpoch;
@@ -25,10 +24,11 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     [JsonIgnore] public readonly TimeSpan TimeSpan;
     [JsonIgnore] public DateTime Time => ToUtcDateTime();
     public long Ticks => TimeSpan.Ticks;
+    public long Seconds => ToLong();
 
     [System.Text.Json.Serialization.JsonConstructor]
     [JsonConstructor]
-    public UnixTimeStamp(long ticks)
+    private UnixTimeStamp(long ticks)
     {
         TimeSpan = new TimeSpan(ticks);
     }
@@ -38,7 +38,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
         TimeSpan = timeSpan;
     }
 
-    public UnixTimeStamp(long unix, UnixFormat format)
+    public UnixTimeStamp(long unix, UnixFormat format = UnixFormat.Seconds)
     {
         TimeSpan = format switch
         {
@@ -64,7 +64,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     #region GetLong
 
     public long ToLong(UnixFormat format = UnixFormat.Seconds) => GetTimespanUnits(TimeSpan, format);
-    internal long GetTimespanUnits(TimeSpan timeSpan, UnixFormat format)
+    internal static long GetTimespanUnits(TimeSpan timeSpan, UnixFormat format)
     {
         return format switch
         {
@@ -75,6 +75,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
     }
+
 
     #endregion
 
@@ -98,17 +99,23 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     /// Converts DateTime to UTC format
     /// </summary>
     /// <param name="dateTime"></param>
+    /// <param name="unixFormat">Format used for future equality</param>
     /// <returns>UTC UnixTimeStamp</returns>
-    public static UnixTimeStamp FromDateTime(DateTime dateTime)
+    public static UnixTimeStamp FromDateTime(DateTime dateTime, UnixFormat unixFormat = UnixFormat.Seconds)
     {
         var timeSpan = dateTime.ToUniversalTime() - Epoch;
-        return new UnixTimeStamp(timeSpan.Ticks);
+        return new UnixTimeStamp(GetTimespanUnits(timeSpan, unixFormat), unixFormat);
     }
 
     #region Object overrides
+    public bool Equals(UnixTimeStamp obj, UnixFormat format = UnixFormat.Seconds)
+    {
+        return obj.TimeSpan.Equals(TimeSpan) || GetTimespanUnits(TimeSpan, format) == GetTimespanUnits(obj.TimeSpan, format);
+    }
+
     public override bool Equals(object? obj)
     {
-        return obj is UnixTimeStamp other && other.TimeSpan.Equals(TimeSpan);
+        return obj is UnixTimeStamp other && Equals(other);
     }
     public override int GetHashCode()
     {
@@ -116,7 +123,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
     }
     public override string ToString()
     {
-        return Ticks.ToString();
+        return Seconds.ToString();
     }
     #endregion
 

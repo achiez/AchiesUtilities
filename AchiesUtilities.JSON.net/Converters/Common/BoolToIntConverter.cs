@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
@@ -12,9 +13,9 @@ public class BoolToIntConverter : JsonConverter<bool>
 
     public override bool ReadJson(JsonReader reader, Type objectType, bool existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
-        if (reader.Value is not int value)
+        if (reader.Value is not long value)
         {
-            throw new NullReferenceException("JsonReader value was null or not int");
+            throw JsonConverterException.Create(reader,"JsonReader value was null or not long. Error converting to bool.", typeof(BoolToIntConverter), null);
         }
 
         return value > 0;

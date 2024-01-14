@@ -4,10 +4,11 @@ using JetBrains.Annotations;
 namespace AchiesUtilities.Extensions;
 
 
-[PublicAPI]
+
 /// <summary>
 /// Class with extensions which helps when some service provides TimeStamp with offset according to its timezone
 /// </summary>
+[PublicAPI]
 public static class UnixTimeZoneExtension
 {
     public static long ToLongLocal(this  UnixTimeStamp unix, UnixFormat format = UnixFormat.Seconds)

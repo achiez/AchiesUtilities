@@ -1,5 +1,7 @@
-﻿namespace AchiesUtilities.Exceptions;
+﻿using JetBrains.Annotations;
 
+namespace AchiesUtilities.Exceptions;
+[PublicAPI]
 public static class ExceptionHandler
 {
     public static void Ignore(Action a)

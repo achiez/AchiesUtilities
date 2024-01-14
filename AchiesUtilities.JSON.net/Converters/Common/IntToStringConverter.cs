@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
@@ -12,8 +13,26 @@ public class IntToStringConverter : JsonConverter<int>
 
     public override int ReadJson(JsonReader reader, Type objectType, int existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
+        try
+        {
+            if (reader.TokenType == JsonToken.Integer)
+            {
+                return (int)reader.Value!;
+            }
 
-        var value = (string)reader.Value!;
-        return int.Parse(value);
+            if (reader.TokenType == JsonToken.String)
+            {
+                var value = (string)reader.Value!;
+                return int.Parse(value);
+            }
+            throw JsonConverterException.Create(reader,
+                "Can't convert value to int32. Type of value is not string", typeof(IntToStringConverter), null);
+        }
+        catch (Exception ex)
+            when (ex is not JsonConverterException)
+        {
+            throw JsonConverterException.Create(reader, "Error while converting value to int32.",
+                typeof(IntToStringConverter), ex);
+        }
     }
 }
