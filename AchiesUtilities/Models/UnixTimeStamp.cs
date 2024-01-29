@@ -12,6 +12,7 @@ public enum UnixFormat
     Ticks
 }
 
+
 [PublicAPI]
 [Serializable]
 [DebuggerDisplay("{Seconds}")]
@@ -159,6 +160,53 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
 
     #endregion
 
+
+    #endregion
+
+
+    #region Parse
+
+    public static UnixTimeStamp Parse(object obj, UnixFormat format = UnixFormat.Seconds)
+    {
+        if (obj == null!)
+        {
+            throw new ArgumentNullException(nameof(obj));
+        }
+        return obj switch
+        {
+            long l => new UnixTimeStamp(l, format),
+            int i => new UnixTimeStamp(i, format),
+            string s => Parse(s, format),
+            _ => throw new FormatException($"Can't parse {nameof(UnixTimeStamp)} from value {obj}")
+        };
+    }
+
+    public static UnixTimeStamp Parse(string s, UnixFormat format = UnixFormat.Seconds)
+    {
+        return new UnixTimeStamp(long.Parse(s), format);
+    }
+
+    public static bool TryParse(object? obj, out UnixTimeStamp unixTimeStamp, UnixFormat format = UnixFormat.Seconds)
+    {
+        unixTimeStamp = default;
+        return obj switch
+        {
+            long l => TryParse(l, out unixTimeStamp, format),
+            int i => TryParse(i, out unixTimeStamp, format),
+            string s => TryParse(s, out unixTimeStamp, format),
+            _ => false
+        };
+    }
+    public static bool TryParse(string? s, out UnixTimeStamp unixTimeStamp, UnixFormat format = UnixFormat.Seconds)
+    {
+        if (long.TryParse(s, out var l))
+        {
+            unixTimeStamp = new UnixTimeStamp(l, format);
+            return true;
+        }
+        unixTimeStamp = default;
+        return false;
+    }
 
     #endregion
 }

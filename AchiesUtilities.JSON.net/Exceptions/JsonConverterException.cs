@@ -33,7 +33,7 @@ public class JsonConverterException : JsonSerializationException
     public static JsonConverterException Create(JsonReader reader, string message, Type? converterType, Exception? ex)
     {
         var lineInfo = reader as IJsonLineInfo;
-        message = FormatMessage(lineInfo, reader.Path, converterType, message);
+        message = FormatMessage(reader, reader.Path, converterType, message);
 
         int lineNumber;
         int linePosition;
@@ -51,8 +51,9 @@ public class JsonConverterException : JsonSerializationException
         return new JsonConverterException(message, reader.Path, lineNumber, linePosition, converterType, ex);
     }
 
-    private static string FormatMessage(IJsonLineInfo? lineInfo, string path, Type? converterType, string message)
+    private static string FormatMessage(JsonReader reader, string path, Type? converterType, string message)
     {
+        var lineInfo = reader as IJsonLineInfo;
         // don't add a fullstop and space when message ends with a new line
         if (!message.EndsWith(Environment.NewLine, StringComparison.Ordinal))
         {
@@ -66,6 +67,8 @@ public class JsonConverterException : JsonSerializationException
             message += " ";
         }
 
+        var value = GetValueString(reader);
+        message += $"Provided value: '{value}'. ";
         message += $"Path '{path}'";
 
         if (lineInfo != null && lineInfo.HasLineInfo())
@@ -80,5 +83,18 @@ public class JsonConverterException : JsonSerializationException
         message += ".";
 
         return message;
+    }
+
+    private static string GetValueString(JsonReader reader)
+    {
+        if (reader.Value != null) return reader.Value.ToString() ?? "null";
+        var result = reader.TokenType switch
+        {
+            JsonToken.StartObject => "{object}",
+            JsonToken.StartArray => "{array}",
+            _ => null,
+        };
+        result ??= $"{{{reader.TokenType}}}";
+        return result;
     }
 }

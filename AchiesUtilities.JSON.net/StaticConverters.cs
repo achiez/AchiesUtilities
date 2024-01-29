@@ -1,11 +1,10 @@
 ﻿using AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 using AchiesUtilities.Newtonsoft.JSON.Converters.Special;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON;
 
-[PublicAPI]
+
 public static class StaticConverters
 {
     #region Default

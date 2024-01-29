@@ -10,6 +10,8 @@
 			https://github.com/achiez/AchiesUtilities/
 		</RepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>

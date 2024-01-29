@@ -29,7 +29,7 @@ public class UnixTimeStampConverter : JsonConverter<UnixTimeStamp>
     {
         if (reader.Value is not long value)
             throw JsonConverterException.Create(reader,
-                "Error while converting value to UnixTimeStamp.", typeof(NullableUnixTimeStampConverter), null);
+                "Error while converting value to UnixTimeStamp. Value was null or not long", typeof(NullableUnixTimeStampConverter), null);
 
         return new UnixTimeStamp(value, Format ?? DEFAULT_FORMAT);
     }
