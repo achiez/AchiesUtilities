@@ -4,9 +4,7 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	  <RepositoryUrl>
-		  https://github.com/achiez/AchiesUtilities
-	  </RepositoryUrl>
+	  <RepositoryUrl>https://github.com/achiez/AchiesUtilities</RepositoryUrl>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <IncludeSymbols>true</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
