@@ -51,7 +51,7 @@ public class NullableUnixTimeStampConverter : JsonConverter<UnixTimeStamp?>
             when (ex is not JsonConverterException)
         {
             throw JsonConverterException.Create(reader, $"Error while converting value to nullable timestamp. See inner exception.",
-                typeof(StringToDoubleConverter), ex);
+                typeof(DoubleToStringConverter), ex);
         }
        
     }

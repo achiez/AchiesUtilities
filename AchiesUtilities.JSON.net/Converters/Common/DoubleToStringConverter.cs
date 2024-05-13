@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
-public class StringToDoubleConverter : JsonConverter<double>
+public class DoubleToStringConverter : JsonConverter<double>
 {
     public override void WriteJson(JsonWriter writer, double value, JsonSerializer serializer)
     {
@@ -27,13 +27,13 @@ public class StringToDoubleConverter : JsonConverter<double>
                 return double.Parse(value, CultureInfo.InvariantCulture);
             }
             throw JsonConverterException.Create(reader,
-                "Can't convert value to double. Type of value is not string", typeof(StringToDoubleConverter), null);
+                "Can't convert value to double. Type of value is not string", typeof(DoubleToStringConverter), null);
         }
         catch (Exception ex)
             when (ex is not JsonConverterException)
         {
             throw JsonConverterException.Create(reader, "Error while converting value to double. See inner exception.",
-                typeof(StringToDoubleConverter), ex);
+                typeof(DoubleToStringConverter), ex);
         }
     }
 }
