@@ -92,12 +92,12 @@ internal class ProxyCredentials : ICredentials
 
     public void Set(string username, string password)
     {
-        _username = username;
-        _password = password;
         if (username != _username || password != _password)
         {
             _credential = null;
         }
+        _username = username;
+        _password = password;
         _isSet = true;
     }
 
