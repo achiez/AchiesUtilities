@@ -1,19 +1,23 @@
-﻿using AchiesUtilities.Web.Proxy.Parsing;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using AchiesUtilities.Extensions;
 
-namespace AchiesUtilities.Web.Proxy;
+namespace AchiesUtilities.Web.Proxy.Parsing;
 
-public class ProxyScheme
+public class ProxyParser
 {
+    /// <summary>
+    /// When testing different proxies using the HTTPs protocol, I received <see cref="AuthenticationException"/> exceptions. I still couldn’t figure out what was causing this error, so using HTTPs is essentially impossible. The best solution would be to use HTTP instead and this variable tells <see cref="ProxyParser.Parse"/> to automatically replace HTTPs with HTTP
+    /// </summary>
+    public static bool UseOnlyHTTP { get; set; } = true;
     public static class SchemeGroups
     {
-        public static readonly string Protocol = "PROTOCOL";
-        public static readonly string Host = "HOST";
-        public static readonly string Port = "PORT";
-        public static readonly string Username = "USER";
-        public static readonly string Password = "PASSWORD";
+        public const string Protocol = "PROTOCOL";
+        public const string Host = "HOST";
+        public const string Port = "PORT";
+        public const string Username = "USER";
+        public const string Password = "PASSWORD";
     }
 
     public Regex Regex { get; }
@@ -26,7 +30,7 @@ public class ProxyScheme
     public PatternRequirement PasswordRequirement { get; }
 
 
-    public ProxyScheme(Regex regex, bool protocolRequired, ProxyProtocol? defaultProtocol, ProxyPatternProtocol allowedProtocols, ProxyPatternHostFormat allowedFormats, PatternRequirement usernameRequirement, PatternRequirement passwordRequirement)
+    public ProxyParser(Regex regex, bool protocolRequired, ProxyProtocol? defaultProtocol, ProxyPatternProtocol allowedProtocols, ProxyPatternHostFormat allowedFormats, PatternRequirement usernameRequirement, PatternRequirement passwordRequirement)
     {
         Regex = regex;
         ProtocolRequired = protocolRequired;
@@ -93,6 +97,7 @@ public class ProxyScheme
         return result != null;
     }
 
+    
     private ProxyData? Parse(string input, bool trying)
     {
         var match = Regex.Match(input);
@@ -168,9 +173,16 @@ public class ProxyScheme
                 throw new FormatException($"Provided protocol {protocolString} is not meeting allowed scheme");
             }
 
-            return Enum.Parse<ProxyProtocol>(protocolString, true);
+
+            var result = Enum.Parse<ProxyProtocol>(protocolString, true);
+            if(result == ProxyProtocol.HTTPs && UseOnlyHTTP)
+                return ProxyProtocol.HTTP;
 
         }
+
+        if (UseOnlyHTTP && DefaultProtocol == ProxyProtocol.HTTPs)
+            return ProxyProtocol.HTTP;
+
         return DefaultProtocol;
 
 

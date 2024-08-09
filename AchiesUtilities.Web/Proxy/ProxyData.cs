@@ -25,6 +25,7 @@ public class ProxyData
         Password = password;
     }
 
+    [Obsolete("Use ProxyScheme")]
     /// <summary>
     /// Patterns: <c>{IP} {PORT}</c>. Optional: <c>{USER} {PASS} {TYPE}</c><br/>
     /// Default type HTTP if Type not parsed automatically or from pattern
@@ -164,10 +165,10 @@ public class ProxyData
 
     protected bool Equals(ProxyData other)
     {
-        return Protocol == other.Protocol 
-               && Address == other.Address 
-               && Port == other.Port 
-               && Username == other.Username 
+        return Protocol == other.Protocol
+               && Address == other.Address
+               && Port == other.Port
+               && Username == other.Username
                && Password == other.Password;
     }
 
@@ -175,4 +176,5 @@ public class ProxyData
     {
         return HashCode.Combine((int) Protocol, Address, Port, Username, Password);
     }
+
 }

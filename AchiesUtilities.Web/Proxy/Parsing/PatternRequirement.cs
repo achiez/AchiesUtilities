@@ -1,4 +1,4 @@
-﻿namespace AchiesUtilities.Web.Proxy;
+﻿namespace AchiesUtilities.Web.Proxy.Parsing;
 
 public enum PatternRequirement
 {
