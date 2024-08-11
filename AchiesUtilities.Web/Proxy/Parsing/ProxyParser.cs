@@ -2,9 +2,11 @@
 using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using AchiesUtilities.Extensions;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web.Proxy.Parsing;
 
+[PublicAPI]
 public class ProxyParser
 {
     /// <summary>
@@ -24,22 +26,30 @@ public class ProxyParser
     public bool ProtocolRequired { get; }
     public ProxyProtocol? DefaultProtocol { get; }
     public ProxyPatternProtocol AllowedProtocols { get; }
+    private readonly ProxyPatternProtocol[] _allowedProtocols;
     public ProxyPatternHostFormat AllowedFormats { get; }
 
     public PatternRequirement UsernameRequirement { get; }
     public PatternRequirement PasswordRequirement { get; }
 
+    /// <summary>
+    /// If set to true, the parser will allow empty passwords when Username is present
+    /// </summary>
+    public bool AllowEmptyPassword { get; }
 
-    public ProxyParser(Regex regex, bool protocolRequired, ProxyProtocol? defaultProtocol, ProxyPatternProtocol allowedProtocols, ProxyPatternHostFormat allowedFormats, PatternRequirement usernameRequirement, PatternRequirement passwordRequirement)
+    public ProxyParser(Regex regex, bool protocolRequired, ProxyProtocol? defaultProtocol, ProxyPatternProtocol allowedProtocols, ProxyPatternHostFormat allowedFormats, PatternRequirement usernameRequirement, PatternRequirement passwordRequirement, bool allowEmptyPassword = false)
     {
         Regex = regex;
         ProtocolRequired = protocolRequired;
         DefaultProtocol = defaultProtocol;
         AllowedProtocols = allowedProtocols;
+        _allowedProtocols = AllowedProtocols.GetFlags().ToArray();
         AllowedFormats = allowedFormats;
         UsernameRequirement = usernameRequirement;
         PasswordRequirement = passwordRequirement;
+        AllowEmptyPassword = allowEmptyPassword;
         ValidateRegexAndState(regex);
+
     }
 
 
@@ -74,7 +84,13 @@ public class ProxyParser
             ValidateOrThrow(nameof(PasswordRequirement), SchemeGroups.Password);
         }
 
+        if (AllowEmptyPassword == false && PasswordRequirement == PatternRequirement.Ignore)
+        {
+            throw new InvalidOperationException(
+                               $"Invalid scheme. {nameof(AllowEmptyPassword)} set to false, but {nameof(PasswordRequirement)} set to Ignore");
+        }
 
+        return;
 
         void ValidateOrThrow(string requirement, string groupName)
         {
@@ -97,11 +113,10 @@ public class ProxyParser
         return result != null;
     }
 
-    
+
     private ProxyData? Parse(string input, bool trying)
     {
         var match = Regex.Match(input);
-
 
 
         if (match.Success == false)
@@ -117,31 +132,45 @@ public class ProxyParser
 
         var host = ParseHost(match, trying);
         var port = ParsePort(match, trying);
-        if (host == null || port == null) return null;
-
-
-        var username = ParseCredential(match, SchemeGroups.Username);
-        string? password = null;
-        if (UsernameRequirement == PatternRequirement.Required && username == null)
+        if (host == null)
         {
             if (trying) return null;
-            throw new FormatException(
-                "Error while parsing ProxyData. Username is required but was not presented in input string");
+            throw new FormatException("Error while parsing ProxyData. Host is not specified");
         }
 
-        if (username != null)
+        if (port == null)
         {
-            var pass = ParseCredential(match, SchemeGroups.Password);
-            if (PasswordRequirement == PatternRequirement.Required && pass == null)
+            if (trying) return null;
+            throw new FormatException("Error while parsing ProxyData. Port is not specified");
+        }   
+
+        string? username = null;
+        string? password = null;
+
+        if (UsernameRequirement != PatternRequirement.Ignore)
+        {
+            username = ParseCredential(match, SchemeGroups.Username);
+            password = null;
+            if (UsernameRequirement == PatternRequirement.Required && username == null)
             {
                 if (trying) return null;
                 throw new FormatException(
-                    "Error while parsing ProxyData. Password is required but was not presented in input string");
+                    "Error while parsing ProxyData. Username is required but was not presented in input string");
             }
 
-            password = pass;
-        }
+            if (username != null && PasswordRequirement != PatternRequirement.Ignore)
+            {
+                var pass = ParseCredential(match, SchemeGroups.Password);
+                if ((AllowEmptyPassword == false || PasswordRequirement == PatternRequirement.Required) && pass == null)
+                {
+                    if (trying) return null;
+                    throw new FormatException(
+                        "Error while parsing ProxyData. Password is required but was not presented in input string");
+                }
 
+                password = pass;
+            }
+        }
 
 
         return new ProxyData(protocol, host, port.Value, username, password);
@@ -164,10 +193,7 @@ public class ProxyParser
 
         if (protocolString != null)
         {
-            if (AllowedProtocols
-                    .GetFlags()
-                    .Any(p => protocolString
-                        .Equals(p.ToString(), StringComparison.InvariantCultureIgnoreCase)) == false)
+            if (_allowedProtocols.All(p => protocolString.EqualsIgnoreCase(p.ToString()) == false))
             {
                 if (trying) return null;
                 throw new FormatException($"Provided protocol {protocolString} is not meeting allowed scheme");

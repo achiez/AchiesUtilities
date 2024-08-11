@@ -1,15 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AchiesUtilities.Extensions;
 
 [PublicAPI]
 public static class NumbersInStrings
 {
-   
-    private static readonly Regex Regex = new("(\\d+)");
-
     /// <exception cref="FormatException"></exception>
     public static int ExtractNumeral(this string str)
     {
@@ -68,45 +64,27 @@ public static class NumbersInStrings
     }
     public static bool TryExtractFirstNumeral(this string str, out int result)
     {
-        var match = Regex.Match(str);
-        if (match.Success)
-        {
-            var val = match.Groups[1].Value;
-            result = int.Parse(val);
-            return true;
-        }
-        else
-        {
-            result = default;
-            return false;
-        }
+        var chars = str.SkipWhile(c => char.IsDigit(c) == false).TakeWhile(char.IsDigit).ToArray();
+        return int.TryParse(new string(chars), out result);
+
     }
+
+
     public static bool TryExtractFirstNumeral64(this string str, out long result)
     {
-        var match = Regex.Match(str);
-        if (match.Success)
-        {
-            var val = match.Groups[1].Value;
-            result = long.Parse(val);
-            return true;
-        }
-        else
-        {
-            result = default;
-            return false;
-        }
+        var chars = str.SkipWhile(c => char.IsDigit(c) == false).TakeWhile(char.IsDigit).ToArray();
+        return long.TryParse(new string(chars), out result);
     }
 
     [DoesNotReturn]
     private static void Throw(string str)
     {
-        string msg;
-        msg = str.Length > 100 ? "Provided string does not contain numerals. Provided string stored in Data" 
+        var msg = str.Length > 100 ? "Provided string does not contain numerals. Provided string stored in Data"
             : $"Provided string '{str}' does not contain numerals";
 
         throw new FormatException(msg)
         {
-            Data = {{"ProvidedString", str}}
+            Data = { { "ProvidedString", str } }
         };
     }
 }

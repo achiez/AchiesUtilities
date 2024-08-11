@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using AchiesUtilities.Extensions;
 using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web.Proxy;
@@ -25,7 +26,6 @@ public class ProxyData
         Password = password;
     }
 
-    [Obsolete("Use ProxyScheme")]
     /// <summary>
     /// Patterns: <c>{IP} {PORT}</c>. Optional: <c>{USER} {PASS} {TYPE}</c><br/>
     /// Default type HTTP if Type not parsed automatically or from pattern
@@ -35,6 +35,8 @@ public class ProxyData
     /// <returns></returns>
     /// <exception cref="FormatException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
+
+    [Obsolete("Use ProxyScheme")]
     public static ProxyData Parse(string str, string pattern)
     {
         if (!Contains(pattern, "{IP}") ||
@@ -150,12 +152,12 @@ public class ProxyData
 
     private static string Replace(string input, string toReplace, string value)
     {
-        return input.Replace(toReplace, value, StringComparison.InvariantCultureIgnoreCase);
+        return input.ReplaceIgnoreCase(toReplace, value);
     }
 
     private static bool Contains(string input, string value)
     {
-        return input.Contains(value, StringComparison.InvariantCultureIgnoreCase);
+        return input.ContainsIgnoreCase(value);
     }
 
     public override bool Equals(object? obj)
@@ -163,7 +165,7 @@ public class ProxyData
         return obj is ProxyData p && Equals(p);
     }
 
-    protected bool Equals(ProxyData other)
+    public bool Equals(ProxyData other)
     {
         return Protocol == other.Protocol
                && Address == other.Address

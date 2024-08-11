@@ -16,7 +16,7 @@ public enum UnixFormat
 [PublicAPI]
 [Serializable]
 [DebuggerDisplay("{Seconds}")]
-public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse 
+public readonly struct UnixTimeStamp
 {
     private static DateTime Epoch => DateTime.UnixEpoch;
     public static readonly UnixTimeStamp Zero = FromDateTime(Epoch);
@@ -62,7 +62,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
         : this(unix + unixTimeZone.BaseUtcOffset.Ticks, format)
     { }
 
-    #region GetLong
+    #region ToLong
 
     public long ToLong(UnixFormat format = UnixFormat.Seconds) => GetTimespanUnits(TimeSpan, format);
     internal static long GetTimespanUnits(TimeSpan timeSpan, UnixFormat format)
@@ -80,7 +80,7 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
 
     #endregion
 
-    #region GetDateTime
+    #region ToDateTime
     public DateTime ToUtcDateTime() => Epoch + TimeSpan;
     public DateTime ToDateTime(TimeZoneInfo timeZoneInfo) => TimeZoneInfo.ConvertTime(ToUtcDateTime(), timeZoneInfo);
     public DateTime ToLocalDateTime() => TimeZoneInfo.ConvertTime(ToUtcDateTime(), TimeZoneInfo.Local);
@@ -159,7 +159,6 @@ public readonly struct UnixTimeStamp //TODO: Implicit Conversion, TryParse
 
 
     #endregion
-
 
     #endregion
 
