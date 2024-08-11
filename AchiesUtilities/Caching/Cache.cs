@@ -126,7 +126,7 @@ public sealed class Cache<TKey, TValue>
     }
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
     private void ScanExpirationIfNeeded()
     {
         if(Options.CheckEvery == Cache.NotSet) return;
@@ -136,6 +136,8 @@ public sealed class Cache<TKey, TValue>
             ScheduleTask(now);
         }
 
+        return;
+        
         void ScheduleTask(DateTime time)
         {
             _lastCheck = time;

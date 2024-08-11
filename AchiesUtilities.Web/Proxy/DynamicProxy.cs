@@ -26,7 +26,7 @@ public class DynamicProxy : IWebProxy
 
     private readonly ProxyCredentials _credentials = new();
 
-    public DynamicProxy(ProxyData? data)
+    public DynamicProxy(ProxyData? data = null)
     {
         SetData(data);
     }

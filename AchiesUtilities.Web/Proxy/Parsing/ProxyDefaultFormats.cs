@@ -1,28 +1,29 @@
 ﻿using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace AchiesUtilities.Web.Proxy;
+namespace AchiesUtilities.Web.Proxy.Parsing;
 
+[PublicAPI]
 public static class ProxyDefaultFormats
 {
     [RegexPattern]
     private static readonly string _protocol =
-        $"(?<{ProxyScheme.SchemeGroups.Protocol}>{RegexWebPatterns.ProtocolPattern})";
+        $"(?<{ProxyParser.SchemeGroups.Protocol}>{RegexWebPatterns.ProtocolPattern})";
 
     [RegexPattern]
-    private static readonly string _proxyHost = $@"(?<{ProxyScheme.SchemeGroups.Host}>"
+    private static readonly string _proxyHost = $@"(?<{ProxyParser.SchemeGroups.Host}>"
                                                 + $"(?:{RegexWebPatterns.IPv4Pattern})|"
                                                 + $"(?:{RegexWebPatterns.DomainNamePattern})|"
                                                 + "(?:localhost)"
                                                 + ')';
     [RegexPattern]
-    private static readonly string _port = @"(?<" + $"{ProxyScheme.SchemeGroups.Port}" + @">\d{1,5})"; //Not the best, but its better than full validation
+    private static readonly string _port = @"(?<" + $"{ProxyParser.SchemeGroups.Port}" + @">\d{1,5})"; //Not the best, but it's easier than full validation
 
     [RegexPattern]
-    private static readonly string _user = $"(?<{ProxyScheme.SchemeGroups.Username}>.+)";
+    private static readonly string _user = $"(?<{ProxyParser.SchemeGroups.Username}>.+)";
 
     [RegexPattern]
-    private static readonly string _pass = $"(?<{ProxyScheme.SchemeGroups.Password}>.+)";
+    private static readonly string _pass = $"(?<{ProxyParser.SchemeGroups.Password}>.+)";
 
 
     /// <summary>
@@ -35,7 +36,8 @@ public static class ProxyDefaultFormats
                     + ":"
                     + _port
                     + "(?::" + _user + ":" + _pass + ")?"
-                    + "$");
+                    + "$",
+                RegexOptions.Compiled);
 
 
     /// <summary>
@@ -49,6 +51,28 @@ public static class ProxyDefaultFormats
             + _proxyHost
             + ":"
             + _port
-            + "$");
+            + "$",
+        RegexOptions.Compiled);
+
+
+    public static readonly ProxyParser UniversalHostFirstColonDelimiterParser = new(
+        UniversalHostFirstColonDelimiter,
+        true,
+        ProxyProtocol.HTTP,
+        ProxyPatternProtocol.All,
+        ProxyPatternHostFormat.All,
+        PatternRequirement.Optional,
+        PatternRequirement.Optional
+    );
+
+    public static readonly ProxyParser UniversalHostFirstSignAtDelimiterParser = new(
+        UniversalHostFirstSignAtDelimiter,
+        true,
+        ProxyProtocol.HTTP,
+        ProxyPatternProtocol.All,
+        ProxyPatternHostFormat.All,
+        PatternRequirement.Optional,
+        PatternRequirement.Optional
+    );
 
 }
