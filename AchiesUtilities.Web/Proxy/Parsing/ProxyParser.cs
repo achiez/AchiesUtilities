@@ -203,6 +203,8 @@ public class ProxyParser
             var result = Enum.Parse<ProxyProtocol>(protocolString, true);
             if(result == ProxyProtocol.HTTPs && UseOnlyHTTP)
                 return ProxyProtocol.HTTP;
+            
+            return result;
 
         }
 
