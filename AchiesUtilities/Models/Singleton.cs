@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities.Models;
 
+[PublicAPI]
 public class Singleton<T> where T : class
 {
     private static readonly object _lock = new();

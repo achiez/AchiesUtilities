@@ -4,14 +4,14 @@ using System.Collections.Concurrent;
 namespace AchiesUtilities.AsyncHelpers;
 
 [PublicAPI]
-public class BackgroundTaskCatcher : IAsyncDisposable
+public class BackgroundTaskChecker : IAsyncDisposable
 {
     private readonly ConcurrentQueue<Task> _tasks = new();
     private readonly CancellationTokenSource _cts = new();
     private Task? _checkTask;
     private readonly TimeSpan _downtime;
     private bool _disposed;
-    public BackgroundTaskCatcher(TimeSpan downtime)
+    public BackgroundTaskChecker(TimeSpan downtime)
     {
         _downtime = downtime;
     }
@@ -63,7 +63,7 @@ public class BackgroundTaskCatcher : IAsyncDisposable
 
     private void ThrowIfDisposed()
     {
-        if (_disposed) throw new ObjectDisposedException(nameof(BackgroundTaskCatcher));
+        if (_disposed) throw new ObjectDisposedException(nameof(BackgroundTaskChecker));
     }
     public async ValueTask DisposeAsync()
     {

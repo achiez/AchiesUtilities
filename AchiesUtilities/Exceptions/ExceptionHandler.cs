@@ -23,4 +23,27 @@ public static class ExceptionHandler
     {
         try { return await a(); } catch { return default; }
     }
+
+
+    public static void Ignore<TException>(Action a) where TException : Exception
+    {
+        try { a(); } catch(TException) { }
+    }
+
+    public static T? Ignore<T, TException>(Func<T> a) where TException : Exception
+    {
+        try { return a(); } catch(Exception) { return default; }
+    }
+
+    public static async Task Ignore<TException>(Func<Task> a) where TException : Exception
+    {
+        try { await a(); } catch(TException) { }
+    }
+
+    public static async Task<T?> Ignore<T, TException>(Func<Task<T>> a) where TException : Exception
+    {
+        try { return await a(); } catch(TException) { return default; }
+    }
+
+
 }
