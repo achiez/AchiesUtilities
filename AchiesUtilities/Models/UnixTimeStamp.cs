@@ -51,16 +51,16 @@ public readonly struct UnixTimeStamp
         };
     }
 
-    /// <summary>
-    /// Used only if UnixTimeStamp represented in local timezone offset
-    /// <br/>Even if it is weird usage, some services can provide offset timestamp.
-    /// </summary>
-    /// <param name="unix"></param>
-    /// <param name="format"></param>
-    /// <param name="unixTimeZone"></param>
-    public UnixTimeStamp(long unix, UnixFormat format, TimeZoneInfo unixTimeZone)
-        : this(unix + unixTimeZone.BaseUtcOffset.Ticks, format)
-    { }
+    ///// <summary>
+    ///// Used only if UnixTimeStamp represented in local timezone offset
+    ///// <br/>Even if it is weird usage, some services can provide offset timestamp.
+    ///// </summary>
+    ///// <param name="unix"></param>
+    ///// <param name="format"></param>
+    ///// <param name="unixTimeZone"></param>
+    //public UnixTimeStamp(long unix, UnixFormat format, TimeZoneInfo unixTimeZone)
+    //    : this(unix + unixTimeZone.BaseUtcOffset.Ticks, format)
+    //{ }
 
     #region ToLong
 
@@ -167,10 +167,7 @@ public readonly struct UnixTimeStamp
 
     public static UnixTimeStamp Parse(object obj, UnixFormat format = UnixFormat.Seconds)
     {
-        if (obj == null!)
-        {
-            throw new ArgumentNullException(nameof(obj));
-        }
+        ArgumentNullException.ThrowIfNull(obj);
         return obj switch
         {
             long l => new UnixTimeStamp(l, format),
@@ -205,6 +202,12 @@ public readonly struct UnixTimeStamp
         }
         unixTimeStamp = default;
         return false;
+    }
+
+    private static bool TryParse(long l, out UnixTimeStamp unixTimeStamp, UnixFormat format = UnixFormat.Seconds)
+    {
+        unixTimeStamp = new UnixTimeStamp(l, format);
+        return true;
     }
 
     #endregion
