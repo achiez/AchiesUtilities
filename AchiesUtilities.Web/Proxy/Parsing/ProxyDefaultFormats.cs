@@ -30,7 +30,7 @@ public static class ProxyDefaultFormats
     /// <c>{PROTOCOL://}:{HOST}:{PORT}:{USER}:{PASS}</c><br/>
     /// Protocol and USER:PASS are optional
     /// </summary>
-    public static readonly Regex UniversalHostFirstColonDelimiter = new(
+    public static readonly Regex UniversalColon = new(
                 "^" + @$"(?:{_protocol}://)?"
                     + _proxyHost
                     + ":"
@@ -44,7 +44,7 @@ public static class ProxyDefaultFormats
     /// <c>{PROTOCOL://}{USER}:{PASS}@{HOST}:{PORT}:</c><br/>
     /// Protocol and USER:PASS are optional
     /// </summary>
-    public static readonly Regex UniversalHostFirstSignAtDelimiter = new(
+    public static readonly Regex UniversalSignAt = new(
         "^" + @$"(?:{_protocol}://)?"
             + "(?:" + _user + ":[^/]" + _pass + ")?"
             + "@"
@@ -55,9 +55,9 @@ public static class ProxyDefaultFormats
         RegexOptions.Compiled);
 
 
-    public static readonly ProxyParser UniversalHostFirstColonDelimiterParser = new(
-        UniversalHostFirstColonDelimiter,
-        true,
+    public static readonly ProxyParser UniversalColonParser = new(
+        UniversalColon,
+        false,
         ProxyProtocol.HTTP,
         ProxyPatternProtocol.All,
         ProxyPatternHostFormat.All,
@@ -65,9 +65,9 @@ public static class ProxyDefaultFormats
         PatternRequirement.Optional
     );
 
-    public static readonly ProxyParser UniversalHostFirstSignAtDelimiterParser = new(
-        UniversalHostFirstSignAtDelimiter,
-        true,
+    public static readonly ProxyParser UniversalSignAtParser = new(
+        UniversalSignAt,
+        false,
         ProxyProtocol.HTTP,
         ProxyPatternProtocol.All,
         ProxyPatternHostFormat.All,
