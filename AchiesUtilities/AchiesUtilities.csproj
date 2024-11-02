@@ -10,8 +10,8 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<AssemblyVersion>1.2.1</AssemblyVersion>
-		<Version>1.2.1</Version>
+		<AssemblyVersion>1.2.2</AssemblyVersion>
+		<Version>1.2.2</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
