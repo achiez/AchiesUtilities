@@ -46,7 +46,7 @@ public static class ProxyDefaultFormats
     /// </summary>
     public static readonly Regex UniversalSignAt = new(
         "^" + @$"(?:{_protocol}://)?"
-            + "(?:" + _user + ":[^/]" + _pass + "@)?"
+            + "(?:" + _user + ":" + _pass + "@)?"
             + _proxyHost
             + ":"
             + _port
