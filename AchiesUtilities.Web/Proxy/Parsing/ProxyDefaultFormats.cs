@@ -46,8 +46,7 @@ public static class ProxyDefaultFormats
     /// </summary>
     public static readonly Regex UniversalSignAt = new(
         "^" + @$"(?:{_protocol}://)?"
-            + "(?:" + _user + ":[^/]" + _pass + ")?"
-            + "@"
+            + "(?:" + _user + ":[^/]" + _pass + "@)?"
             + _proxyHost
             + ":"
             + _port
@@ -71,8 +70,8 @@ public static class ProxyDefaultFormats
         ProxyProtocol.HTTP,
         ProxyPatternProtocol.All,
         ProxyPatternHostFormat.All,
-        PatternRequirement.Optional,
-        PatternRequirement.Optional
+        PatternRequirement.Required,
+        PatternRequirement.Required
     );
 
 }
