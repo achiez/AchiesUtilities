@@ -1,9 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities.Helpers;
 
+[PublicAPI]
 public static class ArgumentOutOfRangeHelper
 {
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static void ThrowIfOutOfRangeExclusive(decimal value, decimal min, decimal max, [CallerArgumentExpression(nameof(value))] string paramName = "")
     {
         if (value <= min || value >= max)
@@ -12,6 +15,7 @@ public static class ArgumentOutOfRangeHelper
         }
     }
 
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static void ThrowIfOutOfRange(decimal value, decimal min, decimal max, [CallerArgumentExpression(nameof(value))] string paramName = "")
     {
         if (value < min || value > max)
@@ -21,6 +25,7 @@ public static class ArgumentOutOfRangeHelper
 
     }
 
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static void ThrowIfOutOfRangeExclusiveRight(decimal value, decimal min, decimal max, [CallerArgumentExpression(nameof(value))] string paramName = "")
     {
         if (value < min || value >= max)
@@ -29,6 +34,7 @@ public static class ArgumentOutOfRangeHelper
         }
     }
 
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static void ThrowIfOutOfRangeExclusiveLeft(decimal value, decimal min, decimal max, [CallerArgumentExpression(nameof(value))] string paramName = "")
     {
         if (value <= min || value > max)

@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using System.Diagnostics.CodeAnalysis;
+using AchiesUtilities.Models;
 
 namespace AchiesUtilities.Extensions;
 
@@ -15,7 +16,7 @@ public static class NumbersInStrings
         }
 
         Throw(str);
-        return default; //Never reached
+        return Never<int>.Returns;
     }
 
     /// <exception cref="FormatException"></exception>
@@ -26,7 +27,7 @@ public static class NumbersInStrings
             return result;
         }
         Throw(str);
-        return default; //Never reached
+        return Never<long>.Returns;
     }
 
     /// <exception cref="FormatException"></exception>
@@ -37,7 +38,7 @@ public static class NumbersInStrings
             return result;
         }
         Throw(str);
-        return default; //Never reached
+        return Never<int>.Returns;
     }
 
     /// <exception cref="FormatException"></exception>
@@ -48,7 +49,7 @@ public static class NumbersInStrings
             return result;
         }
         Throw(str);
-        return default; //Never reached
+        return Never<long>.Returns;
     }
 
 

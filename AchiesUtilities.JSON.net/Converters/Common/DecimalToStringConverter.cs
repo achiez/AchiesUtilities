@@ -1,9 +1,11 @@
 ﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using System.Globalization;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
+[PublicAPI]
 public class DecimalToStringConverter : JsonConverter<decimal>
 {
     public override void WriteJson(JsonWriter writer, decimal value, JsonSerializer serializer)
@@ -39,6 +41,7 @@ public class DecimalToStringConverter : JsonConverter<decimal>
     }
 }
 
+[PublicAPI]
 public class DecimalToStringNullableConverter : JsonConverter<decimal?>
 {
     public override void WriteJson(JsonWriter writer, decimal? value, JsonSerializer serializer)

@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 namespace AchiesUtilities.AsyncHelpers;
 
 [PublicAPI]
+[Obsolete]
 public class BackgroundTaskChecker : IAsyncDisposable
 {
     private readonly ConcurrentQueue<Task> _tasks = new();

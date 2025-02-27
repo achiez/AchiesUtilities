@@ -1,8 +1,10 @@
 ﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
+[PublicAPI]
 public class BoolToIntConverter : JsonConverter<bool>
 {
     public override void WriteJson(JsonWriter writer, bool value, JsonSerializer serializer)

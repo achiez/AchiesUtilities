@@ -16,7 +16,7 @@ public enum UnixFormat
 [PublicAPI]
 [Serializable]
 [DebuggerDisplay("{Seconds}")]
-public readonly struct UnixTimeStamp
+public readonly struct UnixTimeStamp : IComparable<UnixTimeStamp>, IEquatable<UnixTimeStamp>
 {
     private static DateTime Epoch => DateTime.UnixEpoch;
     public static readonly UnixTimeStamp Zero = FromDateTime(Epoch);
@@ -27,8 +27,7 @@ public readonly struct UnixTimeStamp
     public long Ticks => TimeSpan.Ticks;
     public long Seconds => ToLong();
 
-    [System.Text.Json.Serialization.JsonConstructor]
-    [JsonConstructor]
+    [UsedImplicitly, System.Text.Json.Serialization.JsonConstructor, JsonConstructor]
     private UnixTimeStamp(long ticks)
     {
         TimeSpan = new TimeSpan(ticks);
@@ -45,22 +44,11 @@ public readonly struct UnixTimeStamp
         {
             UnixFormat.Seconds => TimeSpan.FromSeconds(unix),
             UnixFormat.Milliseconds => TimeSpan.FromMilliseconds(unix),
-            UnixFormat.Microseconds => TimeSpan.FromMilliseconds(unix) * 1000,
+            UnixFormat.Microseconds => TimeSpan.FromMicroseconds(unix),
             UnixFormat.Ticks => new TimeSpan(unix),
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
     }
-
-    ///// <summary>
-    ///// Used only if UnixTimeStamp represented in local timezone offset
-    ///// <br/>Even if it is weird usage, some services can provide offset timestamp.
-    ///// </summary>
-    ///// <param name="unix"></param>
-    ///// <param name="format"></param>
-    ///// <param name="unixTimeZone"></param>
-    //public UnixTimeStamp(long unix, UnixFormat format, TimeZoneInfo unixTimeZone)
-    //    : this(unix + unixTimeZone.BaseUtcOffset.Ticks, format)
-    //{ }
 
     #region ToLong
 
@@ -71,7 +59,7 @@ public readonly struct UnixTimeStamp
         {
             UnixFormat.Seconds => (long)timeSpan.TotalSeconds,
             UnixFormat.Milliseconds => (long)timeSpan.TotalMilliseconds,
-            UnixFormat.Microseconds => (long)timeSpan.TotalMilliseconds * 1000,
+            UnixFormat.Microseconds => (long)timeSpan.TotalMicroseconds,
             UnixFormat.Ticks => timeSpan.Ticks,
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
         };
@@ -109,23 +97,35 @@ public readonly struct UnixTimeStamp
     }
 
     #region Object overrides
-    public bool Equals(UnixTimeStamp obj, UnixFormat format = UnixFormat.Seconds)
-    {
-        return obj.TimeSpan.Equals(TimeSpan) || GetTimespanUnits(TimeSpan, format) == GetTimespanUnits(obj.TimeSpan, format);
-    }
 
+    public bool EqualsWithPrecision(UnixTimeStamp other, UnixFormat precision)
+    {
+        return TimeSpan.Equals(other.TimeSpan) || GetTimespanUnits(TimeSpan, precision) == GetTimespanUnits(other.TimeSpan, precision);
+    }
+    
+    public bool Equals(UnixTimeStamp other)
+    {
+        return TimeSpan.Equals(other.TimeSpan);
+    }
+    
     public override bool Equals(object? obj)
     {
         return obj is UnixTimeStamp other && Equals(other);
     }
     public override int GetHashCode()
     {
-        return TimeSpan.GetHashCode();
+        return TimeSpan.GetHashCode() * 37;
     }
     public override string ToString()
     {
         return Seconds.ToString();
     }
+
+    public int CompareTo(UnixTimeStamp other)
+    {
+        return TimeSpan.CompareTo(other.TimeSpan);
+    }
+
     #endregion
 
     #region Operators
@@ -211,4 +211,5 @@ public readonly struct UnixTimeStamp
     }
 
     #endregion
+
 }
