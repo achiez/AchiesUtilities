@@ -51,33 +51,41 @@ public abstract class Enumeration<TEnum> : IComparable, IEquatable<Enumeration<T
         return obj is Enumeration<TEnum> other ? Id.CompareTo(other.Id) : 1;
     }
 
-    public static bool operator ==(Enumeration<TEnum> left, Enumeration<TEnum> right)
+    public static bool operator ==(Enumeration<TEnum>? left, Enumeration<TEnum>? right)
     {
+        if (left is null) return right is null;
         return left.Equals(right);
     }
 
-    public static bool operator !=(Enumeration<TEnum> left, Enumeration<TEnum> right)
+    public static bool operator !=(Enumeration<TEnum>? left, Enumeration<TEnum>? right)
     {
-        return !left.Equals(right);
+        return !(left == right);
     }
 
-    public static bool operator <(Enumeration<TEnum> left, Enumeration<TEnum> right)
+    public static bool operator <(Enumeration<TEnum>? left, Enumeration<TEnum>? right)
     {
+        if (left is null || right is null) return false;
         return left.Id < right.Id;
     }
 
-    public static bool operator >(Enumeration<TEnum> left, Enumeration<TEnum> right)
+    public static bool operator >(Enumeration<TEnum>? left, Enumeration<TEnum>? right)
     {
+        if (left is null || right is null) return false;
         return left.Id > right.Id;
     }
 
-    public static bool operator <=(Enumeration<TEnum> left, Enumeration<TEnum> right)
+    public static bool operator <=(Enumeration<TEnum>? left, Enumeration<TEnum>? right)
     {
+        if (left is null) return true;
+        if (right is null) return false;
         return left.Id <= right.Id;
     }
 
-    public static bool operator >=(Enumeration<TEnum> left, Enumeration<TEnum> right)
+    public static bool operator >=(Enumeration<TEnum>? left, Enumeration<TEnum>? right)
     {
+        if (right is null) return true;
+        if (left is null) return false;
         return left.Id >= right.Id;
     }
+
 }
