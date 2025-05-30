@@ -12,17 +12,19 @@ public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     INotifyCollectionChanged,
     INotifyPropertyChanged where TKey : notnull
 {
-    private readonly ISerializable _serializableImplementation;
     private readonly IDeserializationCallback _deserializationCallbackImplementation;
-    private readonly IDictionary _dictionaryImplementation;
     private readonly Dictionary<TKey, TValue> _dictionary;
+    private readonly IDictionary _dictionaryImplementation;
     private readonly Dictionary<TKey, KeyIndex> _indices = new();
+    private readonly ISerializable _serializableImplementation;
     private KeyIndex? _last;
+
     public ObservableDictionary() : this(new Dictionary<TKey, TValue>())
-    { }
+    {
+    }
 
     /// <summary>
-    /// Slow
+    ///     Slow
     /// </summary>
     /// <param name="dictionary"></param>
     public ObservableDictionary(Dictionary<TKey, TValue> dictionary)
@@ -52,7 +54,107 @@ public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     public event NotifyCollectionChangedEventHandler? CollectionChanged;
     public event PropertyChangedEventHandler? PropertyChanged;
 
-  
+    private void AddEntry(TKey key, TValue value)
+    {
+        _dictionary.Add(key, value);
+        var index = _dictionary.Count - 1;
+        var keyIndex = new KeyIndex(index)
+        {
+            PreviousIndexedValue = _last
+        };
+        if (_last != null)
+        {
+            _last.NextIndexedValue = keyIndex;
+        }
+
+        _last = keyIndex;
+        _indices.Add(key, keyIndex);
+        FirePropertyChanged();
+        FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,
+            KvpShortcut(key, value), index));
+    }
+
+    private bool RemoveEntry(TKey key)
+    {
+        if (_dictionary.TryGetValue(key, out var value) == false) return false;
+        var index = _indices[key];
+        var removedIndex = index.Index;
+        index.RemoveIndex();
+        _dictionary.Remove(key);
+        _indices.Remove(key);
+        FirePropertyChanged();
+        FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
+            KvpShortcut(key, value), removedIndex));
+        return true;
+    }
+
+    private void SetEntry(TKey key, TValue value)
+    {
+        if (_dictionary.TryGetValue(key, out var old))
+        {
+            _dictionary[key] = value;
+            var index = _indices[key].Index;
+            FirePropertyChanged();
+            FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
+                KvpShortcut(key, value), KvpShortcut(key, old), index));
+        }
+        else
+        {
+            AddEntry(key, value);
+        }
+    }
+
+    private void ClearEntries()
+    {
+        _dictionary.Clear();
+        _indices.Clear();
+        FirePropertyChanged();
+        FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+    }
+
+    private void FireCollectionChanged(NotifyCollectionChangedEventArgs args)
+    {
+        CollectionChanged?.Invoke(this, args);
+    }
+
+    private void FirePropertyChanged()
+    {
+        OnPropertyChanged("Count");
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Keys");
+        OnPropertyChanged("Values");
+    }
+
+    private void OnPropertyChanged(string property)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+    }
+
+    private static KeyValuePair<TKey, TValue> KvpShortcut(TKey key, TValue value)
+    {
+        return new KeyValuePair<TKey, TValue>(key, value);
+    }
+
+    private TValue? TryCastValue(object? value)
+    {
+        if (value == null && Nullable.GetUnderlyingType(typeof(TValue)) != null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        if (value == null)
+        {
+            return (TValue?) value;
+        }
+
+        if ((TValue) value == null)
+        {
+            throw new InvalidCastException($"Can't cast value of type {value!.GetType()} to type {typeof(TValue)}");
+        }
+
+        return (TValue) value;
+    }
+
 
     #region Implementation of Dictionary<,>
 
@@ -70,7 +172,7 @@ public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)_dictionaryImplementation).GetEnumerator();
+        return ((IEnumerable) _dictionaryImplementation).GetEnumerator();
     }
 
     public void CopyTo(Array array, int index)
@@ -84,6 +186,7 @@ public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     public bool IsSynchronized => _dictionaryImplementation.IsSynchronized;
 
     public object SyncRoot => _dictionaryImplementation.SyncRoot;
+
     #endregion
 
     public void Add(TKey key, TValue value)
@@ -114,78 +217,6 @@ public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
 
     #endregion
 
-    private void AddEntry(TKey key, TValue value)
-    {
-        _dictionary.Add(key, value);
-        var index = _dictionary.Count - 1;
-        var keyIndex = new KeyIndex(index)
-        {
-            PreviousIndexedValue = _last,
-        };
-        if (_last != null)
-        {
-            _last.NextIndexedValue = keyIndex;
-        }
-        _last = keyIndex;
-        _indices.Add(key, keyIndex);
-        FirePropertyChanged();
-        FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,  KvpShortcut(key, value), index));
-    }
-
-    private bool RemoveEntry(TKey key)
-    {
-        if (_dictionary.TryGetValue(key, out var value) == false) return false;
-        var index = _indices[key];
-        var removedIndex = index.Index;
-        index.RemoveIndex();
-        _dictionary.Remove(key);
-        _indices.Remove(key);
-        FirePropertyChanged();
-        FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, KvpShortcut(key, value), removedIndex));
-        return true;
-    }
-
-    private void SetEntry(TKey key, TValue value)
-    {
-        if (_dictionary.TryGetValue(key, out var old))
-        {
-            _dictionary[key] = value;
-            var index = _indices[key].Index;
-            FirePropertyChanged();
-            FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, KvpShortcut(key, value), KvpShortcut(key, old), index));
-        }
-        else
-        {
-            AddEntry(key, value);
-        }
-    }
-    private void ClearEntries()
-    {
-        _dictionary.Clear();
-        _indices.Clear();
-        FirePropertyChanged();
-        FireCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-    }
-    private void FireCollectionChanged(NotifyCollectionChangedEventArgs args)
-    {
-        CollectionChanged?.Invoke(this, args);
-    }
-    private void FirePropertyChanged()
-    {
-        OnPropertyChanged("Count");
-        OnPropertyChanged("Item[]");
-        OnPropertyChanged("Keys");
-        OnPropertyChanged("Values");
-    }
-    private void OnPropertyChanged(string property)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-    }
-    private static KeyValuePair<TKey, TValue> KvpShortcut(TKey key, TValue value)
-    {
-        return new KeyValuePair<TKey, TValue>(key, value);
-    }
-
     #region OtherImplementations
 
     void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
@@ -197,26 +228,30 @@ public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
     {
         _deserializationCallbackImplementation.OnDeserialization(sender);
     }
+
     bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
     {
         return _dictionary.Contains(item);
     }
+
     void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-    { 
-        ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).CopyTo(array, arrayIndex);
+    {
+        ((ICollection<KeyValuePair<TKey, TValue>>) _dictionary).CopyTo(array, arrayIndex);
     }
 
     bool IDictionary.Contains(object key)
     {
         return _dictionaryImplementation.Contains(key);
     }
+
     IDictionaryEnumerator IDictionary.GetEnumerator()
     {
         return _dictionaryImplementation.GetEnumerator();
     }
+
     bool IDictionary.IsFixedSize => _dictionaryImplementation.IsFixedSize;
 
-     bool IDictionary.IsReadOnly => _dictionaryImplementation.IsReadOnly;
+    bool IDictionary.IsReadOnly => _dictionaryImplementation.IsReadOnly;
 
     ICollection IDictionary.Keys => _dictionaryImplementation.Keys;
     ICollection IDictionary.Values => _dictionaryImplementation.Values;
@@ -249,34 +284,20 @@ public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
                 return _dictionary.Remove(item.Key);
             }
         }
+
         return false;
     }
+
     void IDictionary.Remove(object key)
     {
         _dictionaryImplementation.Remove(key);
     }
+
     public object? this[object key]
     {
         get => _dictionaryImplementation[key];
-        set => SetEntry((TKey)key, TryCastValue(value));
+        set => SetEntry((TKey) key, TryCastValue(value));
     }
-    #endregion
 
-    private TValue? TryCastValue(object? value)
-    {
-        if (value == null && Nullable.GetUnderlyingType(typeof(TValue)) != null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
-        else if(value == null)
-        {
-            return (TValue?)value;
-        }
-        else if( (TValue)value == null)
-        {
-            throw new InvalidCastException($"Can't cast value of type {value!.GetType()} to type {typeof(TValue)}");
-        }
-        return (TValue)value;
-        
-    }
+    #endregion
 }

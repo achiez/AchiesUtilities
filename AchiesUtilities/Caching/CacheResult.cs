@@ -2,5 +2,8 @@
 
 public enum CacheResult
 {
-    NoOp, Existed, Added, Updated
+    NoOp,
+    Existed,
+    Added,
+    Updated
 }

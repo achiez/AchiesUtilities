@@ -7,85 +7,87 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 
-namespace AchiesUtilities.WPF.Controls.EnumComboBoxControl
+namespace AchiesUtilities.WPF.Controls.EnumComboBoxControl;
+
+[ContentProperty(nameof(Translations))]
+public class EnumComboBox : ComboBox
 {
-    [ContentProperty(nameof(Translations))]
-    public class EnumComboBox : ComboBox
+    // Using a DependencyProperty as the backing store for EnumType.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty EnumTypeProperty =
+        DependencyProperty.Register("EnumType", typeof(Type), typeof(EnumComboBox),
+            new FrameworkPropertyMetadata(default, EnumTypeChanged));
+
+    // Using a DependencyProperty as the backing store for Translations.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty TranslationsProperty =
+        DependencyProperty.Register("Translations", typeof(ObservableCollection<EnumTranslation>), typeof(EnumComboBox),
+            new PropertyMetadata(new ObservableCollection<EnumTranslation>(), TranslationsChanged));
+
+    public Type EnumType
     {
-        static EnumComboBox()
+        get => (Type) GetValue(EnumTypeProperty);
+        set => SetValue(EnumTypeProperty, value);
+    }
+
+
+    public ObservableCollection<EnumTranslation> Translations
+    {
+        get => (ObservableCollection<EnumTranslation>) GetValue(TranslationsProperty);
+        set => SetValue(TranslationsProperty, value);
+    }
+
+    static EnumComboBox()
+    {
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(EnumComboBox),
+            new FrameworkPropertyMetadata(typeof(EnumComboBox)));
+    }
+
+    public EnumComboBox()
+    {
+        SelectedValuePath = nameof(EnumTranslation.EnumMember);
+        DisplayMemberPath = nameof(EnumTranslation.Translation);
+        Translations.CollectionChanged += OnCollectionChanged;
+        ItemsSource = new List<EnumTranslation>();
+    }
+
+    private static void EnumTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not EnumComboBox eComboBox || e.NewValue is not Type eType) return;
+        eComboBox.MapTranslations();
+    }
+
+    private static void TranslationsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not EnumComboBox enumComboBox) return;
+        if (e.OldValue is ObservableCollection<EnumTranslation> old)
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(EnumComboBox), new FrameworkPropertyMetadata(typeof(EnumComboBox)));
+            old.CollectionChanged -= enumComboBox.OnCollectionChanged;
         }
 
-        public EnumComboBox()
+        if (e.NewValue is ObservableCollection<EnumTranslation> newValue)
         {
-            SelectedValuePath = nameof(EnumTranslation.EnumMember);
-            DisplayMemberPath = nameof(EnumTranslation.Translation);
-            Translations.CollectionChanged += OnCollectionChanged;
-            ItemsSource = new List<EnumTranslation>();
+            newValue.CollectionChanged += enumComboBox.OnCollectionChanged;
         }
+    }
 
-        public Type EnumType
+    private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        MapTranslations();
+    }
+
+    private void MapTranslations()
+    {
+        var enums = Enum.GetValues(EnumType);
+        var result = new List<EnumTranslation>();
+        foreach (Enum en in enums)
         {
-            get => (Type)GetValue(EnumTypeProperty);
-            set => SetValue(EnumTypeProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for EnumType.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty EnumTypeProperty =
-            DependencyProperty.Register("EnumType", typeof(Type), typeof(EnumComboBox), new FrameworkPropertyMetadata(defaultValue: default, propertyChangedCallback: EnumTypeChanged));
-
-
-
-        public ObservableCollection<EnumTranslation> Translations
-        {
-            get => (ObservableCollection<EnumTranslation>)GetValue(TranslationsProperty);
-            set => SetValue(TranslationsProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for Translations.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TranslationsProperty =
-            DependencyProperty.Register("Translations", typeof(ObservableCollection<EnumTranslation>), typeof(EnumComboBox), new PropertyMetadata(defaultValue: new ObservableCollection<EnumTranslation>(), TranslationsChanged));
-
-        private static void EnumTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if(d is not EnumComboBox eComboBox || e.NewValue is not Type eType) return;
-            eComboBox.MapTranslations();
-        }
-
-        private static void TranslationsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-           if(d is not EnumComboBox enumComboBox) return;
-           if (e.OldValue is ObservableCollection<EnumTranslation> old)
-           {
-               old.CollectionChanged -= enumComboBox.OnCollectionChanged;
-           }
-
-           if (e.NewValue is ObservableCollection<EnumTranslation> newValue)
-           {
-               newValue.CollectionChanged += enumComboBox.OnCollectionChanged;
-           }
-        }
-
-        private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            MapTranslations();
-        }
-
-        private void MapTranslations()
-        {
-            var enums = Enum.GetValues(EnumType);
-            var result = new List<EnumTranslation>();
-            foreach (Enum en in enums)
+            var existed = Translations.SingleOrDefault(e => e.EnumMember.Equals(en));
+            result.Add(new EnumTranslation
             {
-                var existed = Translations.SingleOrDefault(e => e.EnumMember.Equals(en));
-                result.Add(new EnumTranslation
-                {
-                    EnumMember = en,
-                    Translation = existed?.Translation ?? en.ToString()
-                });
-            }
-            ItemsSource = result;
+                EnumMember = en,
+                Translation = existed?.Translation ?? en.ToString()
+            });
         }
+
+        ItemsSource = result;
     }
 }

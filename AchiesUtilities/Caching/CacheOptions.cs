@@ -4,8 +4,7 @@ namespace AchiesUtilities.Caching;
 
 [PublicAPI]
 public class CacheOptions<TValue>
-
-where TValue : notnull
+    where TValue : notnull
 {
     public IEqualityComparer<TValue>? ValueComparer { get; init; }
     public TimeSpan CheckEvery { get; init; } = Cache.NotSet;
@@ -16,5 +15,7 @@ where TValue : notnull
         ValueComparer = comparer;
     }
 
-    public CacheOptions() { }
+    public CacheOptions()
+    {
+    }
 }

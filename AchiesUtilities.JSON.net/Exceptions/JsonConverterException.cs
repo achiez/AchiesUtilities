@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Exceptions;
 
@@ -7,6 +7,7 @@ public class JsonConverterException : JsonSerializationException
 {
     public Type? ConverterType { get; }
     public string? ConverterName => ConverterType?.Name;
+
     public JsonConverterException()
     {
     }
@@ -19,7 +20,8 @@ public class JsonConverterException : JsonSerializationException
     {
     }
 
-    public JsonConverterException(string message, string path, int lineNumber, int linePosition, Type? converterType, Exception? innerException) : base(message, path, lineNumber, linePosition, innerException)
+    public JsonConverterException(string message, string path, int lineNumber, int linePosition, Type? converterType,
+        Exception? innerException) : base(message, path, lineNumber, linePosition, innerException)
     {
         ConverterType = converterType;
     }
@@ -92,7 +94,7 @@ public class JsonConverterException : JsonSerializationException
         {
             JsonToken.StartObject => "{object}",
             JsonToken.StartArray => "{array}",
-            _ => null,
+            _ => null
         };
         result ??= $"{{{reader.TokenType}}}";
         return result;

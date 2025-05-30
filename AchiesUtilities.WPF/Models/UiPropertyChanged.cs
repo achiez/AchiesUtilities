@@ -8,6 +8,7 @@ namespace AchiesUtilities.WPF.Models;
 public abstract partial class UiPropertyChanged<T> where T : INotifyPropertyChanged
 {
     public readonly T Object;
+
     protected UiPropertyChanged(T obj)
     {
         Object = obj;
@@ -16,10 +17,6 @@ public abstract partial class UiPropertyChanged<T> where T : INotifyPropertyChan
 
     protected virtual void ObjOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            PropertyChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { PropertyChanged?.Invoke(this, e); });
     }
-
 }

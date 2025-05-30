@@ -21,9 +21,9 @@ public static class Cache
         }
     }
 
-    internal static DateTime? GetExpiration<TKey, TValue>(this Cache<TKey, TValue> cache) where TKey : notnull where TValue : notnull
+    internal static DateTime? GetExpiration<TKey, TValue>(this Cache<TKey, TValue> cache)
+        where TKey : notnull where TValue : notnull
     {
         return cache.Options.EntryLifeTime == NotSet ? null : DateTime.Now + cache.Options.EntryLifeTime;
     }
-
 }

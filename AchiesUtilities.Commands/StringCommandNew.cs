@@ -1,14 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using AchiesUtilities.Commands.Core;
-using Microsoft.VisualBasic;
 
 namespace AchiesUtilities.Commands;
 
 public class StringCommandNew
 {
-
-
     public IList<INewCommandArgument> Arguments { get; }
     public IList<INamedCommandArgument<bool>> Flags { get; }
 
@@ -18,7 +14,9 @@ public class StringCommandNew
     public string ArgumentsString { get; }
 
     private readonly Dictionary<string, object> _values = new();
-    public StringCommandNew(string? environment, string commandName, IList<INewCommandArgument> arguments, IList<INamedCommandArgument<bool>> flags, string argumentsString)
+
+    public StringCommandNew(string? environment, string commandName, IList<INewCommandArgument> arguments,
+        IList<INamedCommandArgument<bool>> flags, string argumentsString)
     {
         Arguments = arguments;
         Flags = flags;
@@ -31,27 +29,23 @@ public class StringCommandNew
     {
         if (_values.TryGetValue(name, out var value))
         {
-            return (T)value;
+            return (T) value;
         }
-        else
-        {
-            var argument = Arguments.First(a => a is INamedCommandArgument na && na.Name == name);
-            var val = (T) argument.ArgumentValue;
-            _values[name] = val;
-            return val;
-        }
+
+        var argument = Arguments.First(a => a is INamedCommandArgument na && na.Name == name);
+        var val = (T) argument.ArgumentValue;
+        _values[name] = val;
+        return val;
     }
 
     public T? TryGetArgument<T>([CallerMemberName] string name = "") where T : notnull
     {
         if (_values.TryGetValue(name, out var value))
         {
-            return (T)value;
+            return (T) value;
         }
-        else
-        {
-            return default;
-        }
+
+        return default;
     }
 
     public bool CheckArgument<T>(string name) where T : notnull
@@ -60,19 +54,18 @@ public class StringCommandNew
         {
             return value is T;
         }
-        else
+
+        var argument = Arguments.FirstOrDefault(a => a is INamedCommandArgument<T> na && na.Name == name);
+        var valid = argument != null;
+        if (valid)
         {
-            var argument = Arguments.FirstOrDefault(a => a is INamedCommandArgument<T> na && na.Name == name);
-            var valid = argument != null;
-            if (valid)
-            {
-                _values[name] = ((INamedCommandArgument<T>)argument!).Value;
-            }
-            return valid;
+            _values[name] = ((INamedCommandArgument<T>) argument!).Value;
         }
+
+        return valid;
     }
 
-    public static bool TryParse(string command, [NotNullWhen(returnValue: true)] out StringCommandNew? result)
+    public static bool TryParse(string command, [NotNullWhen(true)] out StringCommandNew? result)
     {
         return ParseInternal(command, false, true, out result);
     }
@@ -83,13 +76,12 @@ public class StringCommandNew
         {
             return result;
         }
-        else
-        {
-            throw new FormatException("Command is not valid");
-        }
+
+        throw new FormatException("Command is not valid");
     }
 
-    private static bool ParseInternal(string command, bool parseEnvironment, bool trying, [NotNullWhen(returnValue: true)] out StringCommandNew? result)
+    private static bool ParseInternal(string command, bool parseEnvironment, bool trying,
+        [NotNullWhen(true)] out StringCommandNew? result)
     {
         var split = command.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         result = null;
@@ -100,7 +92,7 @@ public class StringCommandNew
             throw new FormatException("Command is empty");
         }
 
-        string environment = "";
+        var environment = "";
         if (parseEnvironment)
         {
             environment = split[0];
@@ -116,7 +108,7 @@ public class StringCommandNew
         var commandName = split[0];
         if (CheckIsArgumentName(commandName))
         {
-            if(trying) return false;
+            if (trying) return false;
             throw new FormatException("Command name is not valid. It can't start with '-'");
         }
 
@@ -132,11 +124,12 @@ public class StringCommandNew
             {
                 arg2 = split[i + 1];
             }
+
             var argument = ParseArgument(arg1, arg2, out var isFlag, out var isNamed);
             arguments.Add(argument);
             if (isFlag)
             {
-                flags.Add((INamedCommandArgument<bool>)argument);
+                flags.Add((INamedCommandArgument<bool>) argument);
             }
 
             if (isNamed)
@@ -146,7 +139,7 @@ public class StringCommandNew
         }
 
         var argString = string.Join(' ', split);
-        result  = new StringCommandNew(environment, commandName, arguments, flags, argString);
+        result = new StringCommandNew(environment, commandName, arguments, flags, argString);
         return true;
     }
 
@@ -162,7 +155,8 @@ public class StringCommandNew
     }
 
 
-    private static NewCommandArgument ParseArgument(string argument1, string? argument2, out bool isFlag, out bool isNamed)
+    private static NewCommandArgument ParseArgument(string argument1, string? argument2, out bool isFlag,
+        out bool isNamed)
     {
         isFlag = CheckIsArgumentName(argument1) && (argument2 == null || CheckIsArgumentName(argument2));
         isNamed = CheckIsArgumentName(argument1) && (argument2 == null || !CheckIsArgumentName(argument2));
@@ -174,28 +168,26 @@ public class StringCommandNew
             {
                 return new NewCommandArgument<bool>(true).AsNamed(name);
             }
-            else
+
+            var value = argument2;
+            if (value == null)
             {
-                var value = argument2;
-                if (value == null)
-                {
-                    throw new FormatException("Value is not valid");
-                }
-
-                var intVal = TryParseInt(value);
-                if (intVal != null)
-                {
-                    return intVal.AsNamed(name);
-                }
-
-                var boolVal = TryParseBool(value);
-                if (boolVal != null)
-                {
-                    return boolVal.AsNamed(name);
-                }
-
-                return new NewCommandArgument<string>(value).AsNamed(name);
+                throw new FormatException("Value is not valid");
             }
+
+            var intVal = TryParseInt(value);
+            if (intVal != null)
+            {
+                return intVal.AsNamed(name);
+            }
+
+            var boolVal = TryParseBool(value);
+            if (boolVal != null)
+            {
+                return boolVal.AsNamed(name);
+            }
+
+            return new NewCommandArgument<string>(value).AsNamed(name);
         }
         else
         {
@@ -219,7 +211,6 @@ public class StringCommandNew
 
             return new NewCommandArgument<string>(value);
         }
-
     }
 
     private static NewCommandArgument<int>? TryParseInt(string str)
@@ -228,10 +219,8 @@ public class StringCommandNew
         {
             return new NewCommandArgument<int>(result);
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     private static NewCommandArgument<bool>? TryParseBool(string str)
@@ -240,25 +229,21 @@ public class StringCommandNew
         {
             return new NewCommandArgument<bool>(result);
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 }
 
 public interface INewCommandArgument
 {
     public object ArgumentValue { get; set; }
-
 }
-
 
 public interface INewCommandArgument<T> : INewCommandArgument where T : notnull
 {
     public T Value
     {
-        get => (T)ArgumentValue;
+        get => (T) ArgumentValue;
         set => ArgumentValue = value;
     }
 }
@@ -270,21 +255,20 @@ public interface INamedCommandArgument : INewCommandArgument
 
 public interface INamedCommandArgument<T> : INewCommandArgument<T>, INamedCommandArgument where T : notnull
 {
- 
 }
 
 public class NewCommandArgument : INewCommandArgument
 {
+    public object ArgumentValue { get; set; }
+
     public NewCommandArgument(object argumentValue)
     {
         ArgumentValue = argumentValue;
     }
 
-    public object ArgumentValue { get; set; }
-
     public NewNamedCommandArgument<T> AsNamed<T>(string name) where T : notnull
     {
-        return new NewNamedCommandArgument<T>(name, (T)ArgumentValue);
+        return new NewNamedCommandArgument<T>(name, (T) ArgumentValue);
     }
 }
 
@@ -303,7 +287,7 @@ public class NewCommandArgument<T> : NewCommandArgument, INewCommandArgument<T> 
 {
     public T Value
     {
-        get => (T)ArgumentValue;
+        get => (T) ArgumentValue;
         set => ArgumentValue = value;
     }
 
@@ -321,7 +305,7 @@ public class NewNamedCommandArgument<T> : NewNamedCommandArgument, INamedCommand
 {
     public T Value
     {
-        get => (T)ArgumentValue;
+        get => (T) ArgumentValue;
         set => ArgumentValue = value;
     }
 

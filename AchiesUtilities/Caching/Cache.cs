@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace AchiesUtilities.Caching;
@@ -10,20 +9,20 @@ public sealed class Cache<TKey, TValue>
     where TKey : notnull
     where TValue : notnull
 {
-
     internal CacheOptions<TValue> Options { get; }
 
-    private readonly ConcurrentDictionary<TKey, CachedItem<TValue>> _entries;
+    internal IEqualityComparer<TValue> ValueComparer { get; }
     private readonly ICacheSaver<TKey, TValue>? _cacheSaver;
 
-    private DateTime _lastCheck = DateTime.MinValue;
+    private readonly ConcurrentDictionary<TKey, CachedItem<TValue>> _entries;
 
-    internal IEqualityComparer<TValue> ValueComparer { get; }
+    private DateTime _lastCheck = DateTime.MinValue;
 
     public Cache(CacheOptions<TValue> options, ICacheSaver<TKey, TValue>? saver = null)
     {
         var loaded = saver?.Load();
-        _entries = new ConcurrentDictionary<TKey, CachedItem<TValue>>(loaded ?? new Dictionary<TKey, CachedItem<TValue>>());
+        _entries = new ConcurrentDictionary<TKey, CachedItem<TValue>>(loaded ??
+                                                                      new Dictionary<TKey, CachedItem<TValue>>());
         if (loaded != null)
             this.FillComparerIn(_entries);
 
@@ -44,11 +43,9 @@ public sealed class Cache<TKey, TValue>
             ExecuteRegularOperations();
             return true;
         }
-        else
-        {
-            ExecuteRegularOperations();
-            return false;
-        }
+
+        ExecuteRegularOperations();
+        return false;
     }
 
 
@@ -96,6 +93,7 @@ public sealed class Cache<TKey, TValue>
             value.SetExpired();
         }
     }
+
     public bool SetExpired(TKey key, TValue value)
     {
         if (!_entries.TryGetValue(key, out var cachedItem)) return true;
@@ -103,7 +101,6 @@ public sealed class Cache<TKey, TValue>
         cachedItem.SetExpired();
         ExecuteRegularOperations();
         return true;
-
     }
 
     private bool IsExpired(TKey key, CachedItem<TValue> value)
@@ -113,10 +110,8 @@ public sealed class Cache<TKey, TValue>
             _entries.TryRemove(new KeyValuePair<TKey, CachedItem<TValue>>(key, value));
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     private void ExecuteRegularOperations()
@@ -126,10 +121,9 @@ public sealed class Cache<TKey, TValue>
     }
 
 
-
     private void ScanExpirationIfNeeded()
     {
-        if(Options.CheckEvery == Cache.NotSet) return;
+        if (Options.CheckEvery == Cache.NotSet) return;
         var now = DateTime.Now;
         if (_lastCheck + Options.CheckEvery < now)
         {
@@ -137,11 +131,11 @@ public sealed class Cache<TKey, TValue>
         }
 
         return;
-        
+
         void ScheduleTask(DateTime time)
         {
             _lastCheck = time;
-            Task.Factory.StartNew(state => ((Cache<TKey, TValue>)state!).ScanExpiration(), this,
+            Task.Factory.StartNew(state => ((Cache<TKey, TValue>) state!).ScanExpiration(), this,
                 CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
         }
     }
@@ -153,5 +147,4 @@ public sealed class Cache<TKey, TValue>
             IsExpired(kvp.Key, kvp.Value);
         }
     }
-
 }

@@ -8,6 +8,7 @@ public static class HttpClientExtension
     {
         return CheckConnection(client, CheckConnectionDefaultUrl);
     }
+
     public static async Task<bool> CheckConnection(this HttpClient client, string url)
     {
         try

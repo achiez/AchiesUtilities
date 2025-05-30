@@ -2,5 +2,7 @@
 
 public enum PatternRequirement
 {
-    Optional, Required, Ignore
+    Optional,
+    Required,
+    Ignore
 }

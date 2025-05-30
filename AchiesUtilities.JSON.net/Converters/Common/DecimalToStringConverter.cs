@@ -1,7 +1,7 @@
-﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+﻿using System.Globalization;
+using AchiesUtilities.Newtonsoft.JSON.Exceptions;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using System.Globalization;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
@@ -20,15 +20,16 @@ public class DecimalToStringConverter : JsonConverter<decimal>
         {
             if (reader.TokenType == JsonToken.Float)
             {
-                var d = (double)reader.Value!;
+                var d = (double) reader.Value!;
                 return Convert.ToDecimal(d);
             }
 
             if (reader.TokenType == JsonToken.String)
             {
-                var value = (string)reader.Value!;
+                var value = (string) reader.Value!;
                 return decimal.Parse(value, CultureInfo.InvariantCulture);
             }
+
             throw JsonConverterException.Create(reader,
                 "Can't convert value to decimal. Type of value is not string", typeof(DecimalToStringConverter), null);
         }
@@ -56,13 +57,13 @@ public class DecimalToStringNullableConverter : JsonConverter<decimal?>
         {
             if (reader.TokenType == JsonToken.Float)
             {
-                var d = (double)reader.Value!;
+                var d = (double) reader.Value!;
                 return Convert.ToDecimal(d);
             }
 
             if (reader.TokenType == JsonToken.String)
             {
-                var value = (string)reader.Value!;
+                var value = (string) reader.Value!;
                 return decimal.Parse(value, CultureInfo.InvariantCulture);
             }
 
@@ -72,8 +73,8 @@ public class DecimalToStringNullableConverter : JsonConverter<decimal?>
             }
 
             throw JsonConverterException.Create(reader,
-                "Can't convert value to decimal. Type of value is not string, null or float", typeof(DecimalToStringNullableConverter), null);
-
+                "Can't convert value to decimal. Type of value is not string, null or float",
+                typeof(DecimalToStringNullableConverter), null);
         }
         catch (Exception ex)
             when (ex is not JsonConverterException)

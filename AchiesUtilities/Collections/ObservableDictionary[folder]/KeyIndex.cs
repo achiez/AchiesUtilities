@@ -5,6 +5,7 @@ internal class KeyIndex
     public int Index { get; private set; }
     public KeyIndex? NextIndexedValue { get; set; }
     public KeyIndex? PreviousIndexedValue { get; init; }
+
     public KeyIndex(int index)
     {
         Index = index;
@@ -21,6 +22,5 @@ internal class KeyIndex
             next.Index = --next.Index;
             next = next.NextIndexedValue;
         }
-       
     }
 }

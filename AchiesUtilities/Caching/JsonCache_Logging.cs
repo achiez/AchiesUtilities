@@ -1,7 +1,7 @@
 ﻿namespace AchiesUtilities.Caching;
 
 [Obsolete]
-public abstract partial class JsonCache<TKey, TValue, TCache>
+public abstract class JsonCache<TKey, TValue, TCache>
 {
     /*
     private void LogAdded(AchiesUtilities.CachedItem<TValue> item)

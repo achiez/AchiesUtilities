@@ -8,7 +8,7 @@ public class StringCommand : IStringCommand
 {
     public string CommandName { get; }
     public IList<ICommandArgument> Arguments => NamedArguments.Values.ToList();
- 
+
     protected IReadOnlyDictionary<string, ICommandArgument> NamedArguments { get; set; }
 
 
@@ -33,14 +33,13 @@ public class StringCommand : IStringCommand
     {
         if (NamedArguments.TryGetValue(name, out var argument))
         {
-            if (argument is not ICommandArgument<T> arg) 
-                throw new InvalidOperationException($"Type mismatch: argument with name {name} is {argument.GetType().Name} instead of required {typeof(T).Name}");
-            
+            if (argument is not ICommandArgument<T> arg)
+                throw new InvalidOperationException(
+                    $"Type mismatch: argument with name {name} is {argument.GetType().Name} instead of required {typeof(T).Name}");
+
             return arg.Value;
         }
-        else
-        {
-            throw new InvalidOperationException($"Argument with name {name} was not found");
-        }
+
+        throw new InvalidOperationException($"Argument with name {name} was not found");
     }
 }

@@ -42,9 +42,15 @@ public abstract class Enumeration<TEnum> : IComparable, IEquatable<Enumeration<T
         return other is not null && Id == other.Id;
     }
 
-    public override int GetHashCode() => HashCode.Combine(Id);
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id);
+    }
 
-    public override string ToString() => Name;
+    public override string ToString()
+    {
+        return Name;
+    }
 
     public int CompareTo(object? obj)
     {
@@ -87,5 +93,4 @@ public abstract class Enumeration<TEnum> : IComparable, IEquatable<Enumeration<T
         if (left is null) return false;
         return left.Id >= right.Id;
     }
-
 }

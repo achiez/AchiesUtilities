@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace AchiesUtilities.Models;
 
@@ -8,9 +7,15 @@ public readonly struct Never<T>
 {
     public static T Returns => Throw();
 
-    public static implicit operator T(Never<T> _) => Throw();
+    public static implicit operator T(Never<T> _)
+    {
+        return Throw();
+    }
 
-    private static T Throw() => throw new NeverReturnException();
+    private static T Throw()
+    {
+        throw new NeverReturnException();
+    }
 }
 
 public class NeverReturnException : Exception

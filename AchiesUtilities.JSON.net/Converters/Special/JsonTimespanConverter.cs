@@ -10,7 +10,8 @@ public class JsonTimespanConverter : JsonConverter<TimeSpan>
         writer.WriteValue(value.Ticks);
     }
 
-    public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue,
+        JsonSerializer serializer)
     {
         if (reader.Value is not long value)
             throw JsonConverterException.Create(reader,

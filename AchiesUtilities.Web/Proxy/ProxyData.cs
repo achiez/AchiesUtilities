@@ -27,15 +27,14 @@ public class ProxyData
     }
 
     /// <summary>
-    /// Patterns: <c>{IP} {PORT}</c>. Optional: <c>{USER} {PASS} {TYPE}</c><br/>
-    /// Default type HTTP if Type not parsed automatically or from pattern
+    ///     Patterns: <c>{IP} {PORT}</c>. Optional: <c>{USER} {PASS} {TYPE}</c><br />
+    ///     Default type HTTP if Type not parsed automatically or from pattern
     /// </summary>
     /// <param name="str"></param>
     /// <param name="pattern"></param>
     /// <returns></returns>
     /// <exception cref="FormatException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-
     [Obsolete("Use ProxyScheme")]
     public static ProxyData Parse(string str, string pattern)
     {
@@ -48,7 +47,7 @@ public class ProxyData
         pattern = Replace(pattern, "{IP}", "(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})");
         pattern = Replace(pattern, "{PORT}", "(?<port>\\d{1,5})");
         bool hasCred;
-        bool hasType = false;
+        var hasType = false;
         if (Contains(pattern, "{USER}"))
         {
             hasCred = true;
@@ -67,7 +66,6 @@ public class ProxyData
         {
             hasType = true;
             pattern = Replace(pattern, "{TYPE}", "(?<type>\\w+)");
-
         }
 
         var match = Regex.Match(str, pattern);
@@ -107,7 +105,7 @@ public class ProxyData
     }
 
     /// <summary>
-    /// Patterns: <c>{IP} {PORT}</c>. Optional: <c>{USER} {PASS} {TYPE}</c>
+    ///     Patterns: <c>{IP} {PORT}</c>. Optional: <c>{USER} {PASS} {TYPE}</c>
     /// </summary>
     /// <param name="pattern"></param>
     /// <returns></returns>
@@ -136,7 +134,6 @@ public class ProxyData
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
@@ -178,5 +175,4 @@ public class ProxyData
     {
         return HashCode.Combine((int) Protocol, Address, Port, Username, Password);
     }
-
 }

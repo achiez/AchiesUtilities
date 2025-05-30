@@ -2,14 +2,15 @@
 
 internal sealed class DisposingPooledItem<T> where T : IDisposable
 {
-    private T _item;
-    private Timer _timer;
     public bool Disposed => _disposed == 1;
-    private int _disposed;
-    private TimeSpan _lifetime;
 
 
     private Action<DisposingPooledItem<T>, bool> _callback;
+    private int _disposed;
+    private T _item;
+    private TimeSpan _lifetime;
+    private Timer _timer;
+
     public DisposingPooledItem(Func<T> objectFactory, TimeSpan lifeTime, Action<DisposingPooledItem<T>, bool> callback)
     {
         _item = objectFactory.Invoke();
@@ -22,6 +23,7 @@ internal sealed class DisposingPooledItem<T> where T : IDisposable
     {
         return _item;
     }
+
     public void ManualDispose()
     {
         DisposeItem(true);
@@ -30,7 +32,7 @@ internal sealed class DisposingPooledItem<T> where T : IDisposable
     public void SetLifeTime(TimeSpan value)
     {
         if (Disposed) return;
-        if(value == Timeout.InfiniteTimeSpan && _lifetime == value)
+        if (value == Timeout.InfiniteTimeSpan && _lifetime == value)
             return;
 
         _lifetime = value;

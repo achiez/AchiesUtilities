@@ -4,5 +4,5 @@
     xmlns:enumComboBoxControl="clr-namespace:AchiesUtilities.WPF.Controls.EnumComboBoxControl">
 
 
-    <Style TargetType="{x:Type enumComboBoxControl:EnumComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+    <Style TargetType="{x:Type enumComboBoxControl:EnumComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}" />
 </ResourceDictionary>

@@ -6,6 +6,7 @@ namespace AchiesUtilities.Commands.Exceptions;
 public class InvalidCommandException : Exception
 {
     public string? ProvidedString { get; }
+
     public InvalidCommandException(string? providedString) : base("Provided string is not valid command")
     {
         ProvidedString = providedString;

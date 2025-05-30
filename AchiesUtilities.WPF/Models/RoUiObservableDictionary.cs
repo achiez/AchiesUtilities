@@ -7,33 +7,31 @@ using AchiesUtilities.Collections;
 
 namespace AchiesUtilities.WPF.Models;
 
-public class RoUiObservableDictionary<TKey, TValue> : 
+public class RoUiObservableDictionary<TKey, TValue> :
     IReadOnlyDictionary<TKey, TValue>, INotifyCollectionChanged,
     INotifyPropertyChanged where TKey : notnull
 {
     private readonly ReadOnlyObservableDictionary<TKey, TValue> _collection;
+
     public RoUiObservableDictionary(ReadOnlyObservableDictionary<TKey, TValue> dictionary)
     {
         _collection = dictionary;
-        ((INotifyCollectionChanged)_collection).CollectionChanged += OnCollectionChanged;
-        ((INotifyPropertyChanged)_collection).PropertyChanged += OnPropertyChanged;
+        ((INotifyCollectionChanged) _collection).CollectionChanged += OnCollectionChanged;
+        ((INotifyPropertyChanged) _collection).PropertyChanged += OnPropertyChanged;
     }
 
     private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            PropertyChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { PropertyChanged?.Invoke(this, e); });
     }
 
     private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            CollectionChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { CollectionChanged?.Invoke(this, e); });
     }
+
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     #region Wrapper
 
@@ -48,6 +46,7 @@ public class RoUiObservableDictionary<TKey, TValue> :
     }
 
     public int Count => _collection.Count;
+
     public bool ContainsKey(TKey key)
     {
         return _collection.ContainsKey(key);
@@ -64,7 +63,4 @@ public class RoUiObservableDictionary<TKey, TValue> :
     public IEnumerable<TValue> Values => _collection.Values;
 
     #endregion
-
-    public event NotifyCollectionChangedEventHandler? CollectionChanged;
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

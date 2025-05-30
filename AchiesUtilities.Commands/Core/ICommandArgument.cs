@@ -6,12 +6,11 @@ public interface ICommandArgument
     public object? ArgumentValue { get; set; }
 }
 
-
 public interface ICommandArgument<T> : ICommandArgument
 {
     public T Value
     {
-        get => (T)ArgumentValue;
+        get => (T) ArgumentValue;
         set => ArgumentValue = value;
     }
 }

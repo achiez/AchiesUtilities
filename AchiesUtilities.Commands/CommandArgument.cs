@@ -14,6 +14,4 @@ public class CommandArgument<T> : ICommandArgument<T>
         ArgumentValue = argumentValue;
         IsRequired = isRequired;
     }
-
-
 }

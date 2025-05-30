@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace AchiesUtilities.Web.Extensions;
+﻿namespace AchiesUtilities.Web.Extensions;
 
 public static class HttpResponseMessageExtension
 {
@@ -10,16 +8,20 @@ public static class HttpResponseMessageExtension
     }
 
 
-    public static string ReadAsStringEnsureSuccessSync(this HttpResponseMessage message, CancellationToken cancellationToken = default)
+    public static string ReadAsStringEnsureSuccessSync(this HttpResponseMessage message,
+        CancellationToken cancellationToken = default)
     {
         return message.EnsureSuccessStatusCode().Content.ReadAsStringSync();
     }
-    public static Task<string> ReadAsStringAsync(this HttpResponseMessage message, CancellationToken cancellationToken = default)
+
+    public static Task<string> ReadAsStringAsync(this HttpResponseMessage message,
+        CancellationToken cancellationToken = default)
     {
         return message.Content.ReadAsStringAsync(cancellationToken);
     }
 
-    public static Task<string> ReadAsStringEnsureSuccessAsync(this HttpResponseMessage message, CancellationToken cancellationToken = default)
+    public static Task<string> ReadAsStringEnsureSuccessAsync(this HttpResponseMessage message,
+        CancellationToken cancellationToken = default)
     {
         return message.EnsureSuccessStatusCode().Content.ReadAsStringAsync(cancellationToken);
     }

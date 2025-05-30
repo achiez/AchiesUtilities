@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using AchiesUtilities.Models;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities.Extensions;
 
@@ -26,6 +26,7 @@ public static class NumbersInStrings
         {
             return result;
         }
+
         Throw(str);
         return Never<long>.Returns;
     }
@@ -37,6 +38,7 @@ public static class NumbersInStrings
         {
             return result;
         }
+
         Throw(str);
         return Never<int>.Returns;
     }
@@ -48,6 +50,7 @@ public static class NumbersInStrings
         {
             return result;
         }
+
         Throw(str);
         return Never<long>.Returns;
     }
@@ -58,16 +61,17 @@ public static class NumbersInStrings
         var chars = str.Where(char.IsDigit).ToArray();
         return int.TryParse(new string(chars), out result);
     }
+
     public static bool TryExtractNumeral64(this string str, out long result)
     {
         var chars = str.Where(char.IsDigit).ToArray();
         return long.TryParse(new string(chars), out result);
     }
+
     public static bool TryExtractFirstNumeral(this string str, out int result)
     {
         var chars = str.SkipWhile(c => char.IsDigit(c) == false).TakeWhile(char.IsDigit).ToArray();
         return int.TryParse(new string(chars), out result);
-
     }
 
 
@@ -80,12 +84,13 @@ public static class NumbersInStrings
     [DoesNotReturn]
     private static void Throw(string str)
     {
-        var msg = str.Length > 100 ? "Provided string does not contain numerals. Provided string stored in Data"
+        var msg = str.Length > 100
+            ? "Provided string does not contain numerals. Provided string stored in Data"
             : $"Provided string '{str}' does not contain numerals";
 
         throw new FormatException(msg)
         {
-            Data = { { "ProvidedString", str } }
+            Data = {{"ProvidedString", str}}
         };
     }
 }

@@ -17,7 +17,6 @@ public static class NameValueCollectionExtension
             sb.Append('=');
             sb.Append(value);
             sb.Append('&');
-
         }
 
         sb.Remove(sb.Length - 1, 1);
@@ -34,17 +33,15 @@ public static class NameValueCollectionExtension
             var keyV = encode ? HttpUtility.UrlEncode(key) : key;
             foreach (var value in values)
             {
-
                 var valueV = encode ? HttpUtility.UrlEncode(value) : value;
                 sb.Append(keyV);
                 sb.Append('=');
                 sb.Append(valueV);
                 sb.Append('&');
             }
-
         }
+
         sb.Remove(sb.Length - 1, 1);
         return sb.ToString();
-
     }
 }

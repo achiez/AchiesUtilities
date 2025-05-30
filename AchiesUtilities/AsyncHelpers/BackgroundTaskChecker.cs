@@ -1,5 +1,5 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities.AsyncHelpers;
 
@@ -7,11 +7,12 @@ namespace AchiesUtilities.AsyncHelpers;
 [Obsolete]
 public class BackgroundTaskChecker : IAsyncDisposable
 {
-    private readonly ConcurrentQueue<Task> _tasks = new();
     private readonly CancellationTokenSource _cts = new();
-    private Task? _checkTask;
     private readonly TimeSpan _downtime;
+    private readonly ConcurrentQueue<Task> _tasks = new();
+    private Task? _checkTask;
     private bool _disposed;
+
     public BackgroundTaskChecker(TimeSpan downtime)
     {
         _downtime = downtime;
@@ -43,7 +44,9 @@ public class BackgroundTaskChecker : IAsyncDisposable
                 {
                     await Task.Delay(_downtime, _cts.Token);
                 }
-                catch (TaskCanceledException) { }
+                catch (TaskCanceledException)
+                {
+                }
             }
         }
     }
@@ -53,10 +56,11 @@ public class BackgroundTaskChecker : IAsyncDisposable
         ThrowIfDisposed();
         _tasks.Enqueue(task);
     }
+
     public async ValueTask Check()
     {
         ThrowIfDisposed();
-        if (_checkTask is { IsCompleted: true })
+        if (_checkTask is {IsCompleted: true})
         {
             await _checkTask;
         }
@@ -66,6 +70,7 @@ public class BackgroundTaskChecker : IAsyncDisposable
     {
         if (_disposed) throw new ObjectDisposedException(nameof(BackgroundTaskChecker));
     }
+
     public async ValueTask DisposeAsync()
     {
         if (_disposed) return;

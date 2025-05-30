@@ -7,6 +7,7 @@ public struct ExpirationWatch
 {
     public DateTime Start { get; }
     public DateTime End { get; }
+
     public ExpirationWatch(TimeSpan expiration)
     {
         Start = DateTime.Now;

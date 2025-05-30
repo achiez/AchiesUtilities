@@ -5,8 +5,6 @@ namespace AchiesUtilities.Models;
 [PublicAPI]
 public class SetOnce<T>(T value)
 {
-    private T _value = value;
-
     public T Value
     {
         get => _value;
@@ -14,9 +12,9 @@ public class SetOnce<T>(T value)
     }
 
     public bool IsSet { get; private set; }
+    private T _value = value;
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="value"></param>
     /// <exception cref="InvalidOperationException"></exception>
@@ -34,11 +32,16 @@ public class SetOnce<T>(T value)
         return true;
     }
 
-    public T Get() => Value;
+    public T Get()
+    {
+        return Value;
+    }
 
     /// <summary>
-    /// Set <see cref="IsSet"/> to <see langword="true"/> even if it contains default value
+    ///     Set <see cref="IsSet" /> to <see langword="true" /> even if it contains default value
     /// </summary>
-    public void Seal() => IsSet = true;
-
+    public void Seal()
+    {
+        IsSet = true;
+    }
 }

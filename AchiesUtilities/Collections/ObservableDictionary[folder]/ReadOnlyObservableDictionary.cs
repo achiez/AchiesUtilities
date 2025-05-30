@@ -7,21 +7,20 @@ namespace AchiesUtilities.Collections;
 public class ReadOnlyObservableDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, INotifyCollectionChanged,
     INotifyPropertyChanged where TKey : notnull
 {
-    private readonly ObservableDictionary<TKey, TValue> _dictionary;
-
     public TValue this[TKey key] => _dictionary[key];
 
     public IEnumerable<TKey> Keys => _dictionary.Keys;
     public IEnumerable<TValue> Values => _dictionary.Values;
     public int Count => _dictionary.Count;
+    private readonly ObservableDictionary<TKey, TValue> _dictionary;
 
     public ReadOnlyObservableDictionary(ObservableDictionary<TKey, TValue> dictionary)
     {
         _dictionary = dictionary;
         ((INotifyCollectionChanged) _dictionary).CollectionChanged +=
-            new NotifyCollectionChangedEventHandler(HandleCollectionChanged);
+            HandleCollectionChanged;
         ((INotifyPropertyChanged) _dictionary).PropertyChanged +=
-            new PropertyChangedEventHandler(HandlePropertyChanged);
+            HandlePropertyChanged;
     }
 
     event NotifyCollectionChangedEventHandler? INotifyCollectionChanged.CollectionChanged
@@ -46,7 +45,7 @@ public class ReadOnlyObservableDictionary<TKey, TValue> : IReadOnlyDictionary<TK
     protected virtual event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
-    /// raise PropertyChanged event to any listeners
+    ///     raise PropertyChanged event to any listeners
     /// </summary>
     protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
     {
@@ -66,7 +65,6 @@ public class ReadOnlyObservableDictionary<TKey, TValue> : IReadOnlyDictionary<TK
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
         return _dictionary.GetEnumerator();
-
     }
 
     IEnumerator IEnumerable.GetEnumerator()

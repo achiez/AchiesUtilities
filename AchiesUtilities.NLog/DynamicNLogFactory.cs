@@ -13,24 +13,24 @@ namespace AchiesUtilities.NLog;
 [PublicAPI]
 public class DynamicNLogFactory
 {
+    private readonly IReadOnlyDictionary<Type, DynamicLoggerConfiguration> _configurations;
+    private readonly object[] _ctorArgs = new object[2];
+    private readonly ConstructorInfo _iLoggerCtor;
+    private readonly LogFactory _logFactory;
+    private readonly ILoggerFactory _loggerFactory; //Default implementation
+    private readonly FieldInfo _loggerField;
+    private readonly Type _nLogLoggerType;
 
     private readonly NLogLoggerProvider _provider;
-    private readonly ConstructorInfo _iLoggerCtor;
-    private readonly object[] _ctorArgs = new object[2];
-    private readonly LogFactory _logFactory;
-    private readonly Type _nLogLoggerType;
-    private readonly FieldInfo _loggerField;
-
-    private readonly IReadOnlyDictionary<Type, DynamicLoggerConfiguration> _configurations;
-    private readonly ILoggerFactory _loggerFactory; //Default implementation
 
     public DynamicNLogFactory(ILoggerFactory loggerFactory) : this(loggerFactory, new DynamicNLogFactoryOptions())
-    { }
+    {
+    }
 
     public DynamicNLogFactory(ILoggerFactory loggerFactory, DynamicNLogFactoryOptions factoryOptions)
     {
         _loggerFactory = loggerFactory;
-        _configurations = 
+        _configurations =
             new ReadOnlyDictionary<Type, DynamicLoggerConfiguration>(
                 factoryOptions.Configurations.ToDictionary(x => x.ParameterType, x => x));
 
@@ -43,7 +43,6 @@ public class DynamicNLogFactory
         object? beginScopeParser = null;
         try
         {
-
             var regField = f.GetType()
                 .GetField("_providerRegistrations", BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -55,14 +54,14 @@ public class DynamicNLogFactory
                 var provider = providerField!.GetValue(providerRegistration);
                 if (provider is NLogLoggerProvider p)
                 {
-                    var parserField = p.GetType().GetField("_beginScopeParser", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var parserField = p.GetType()
+                        .GetField("_beginScopeParser", BindingFlags.NonPublic | BindingFlags.Instance);
                     _provider = p;
                     options = p.Options;
                     beginScopeParser = parserField!.GetValue(p)!;
                     _logFactory = p.LogFactory;
                     break;
                 }
-
             }
         }
         catch (Exception e)
@@ -74,20 +73,21 @@ public class DynamicNLogFactory
         if (_provider == null)
             throw new InvalidOperationException("Can't find NLoggerProvider in current logger providers");
 
-        if(options == null)
+        if (options == null)
             throw new InvalidOperationException("Can't find NLogProviderOptions in NLogLoggerProvider");
 
         if (beginScopeParser == null)
             throw new InvalidOperationException("Can't find _beginScopeParser in NLogLoggerProvider");
 
-        if(_logFactory == null)
+        if (_logFactory == null)
             throw new InvalidOperationException("Can't find LogFactory in NLogLoggerProvider");
 
         _nLogLoggerType = Assembly.Load("NLog.Extensions.Logging").GetType("NLog.Extensions.Logging.NLogLogger")!;
         if (_nLogLoggerType == null)
             throw new InvalidOperationException("Can't find NLogLogger type");
 
-        _iLoggerCtor = _nLogLoggerType.GetConstructor(new[]{typeof(Logger), typeof(NLogProviderOptions), beginScopeParser.GetType()})!;
+        _iLoggerCtor = _nLogLoggerType.GetConstructor(new[]
+            {typeof(Logger), typeof(NLogProviderOptions), beginScopeParser.GetType()})!;
         if (_iLoggerCtor == null)
             throw new InvalidOperationException("Can't find NLogLogger constructor");
 
@@ -101,12 +101,14 @@ public class DynamicNLogFactory
     {
         _provider.Dispose();
     }
+
     public ILogger<T> CreateDynamicLogger<T>(T parameter, string name) where T : notnull
     {
         return CreateDynamicLogger<T, T>(parameter, name);
     }
 
-    public ILogger<TLogger> CreateDynamicLogger<T, TLogger>(T parameter, string name) where T : notnull where TLogger : notnull
+    public ILogger<TLogger> CreateDynamicLogger<T, TLogger>(T parameter, string name)
+        where T : notnull where TLogger : notnull
     {
         ArgumentNullException.ThrowIfNull(parameter);
         var parameterType = typeof(T);
@@ -118,13 +120,14 @@ public class DynamicNLogFactory
                 config.ConfigureLogger(parameter, logger);
             }
         }
-        var iLogger = (ILogger)InvokeCtor(logger);
+
+        var iLogger = (ILogger) InvokeCtor(logger);
         return new Logger<TLogger>(new OneTimeFactory(iLogger));
     }
 
 
-
-    public ILogger<TLogger> CreateWithExactConfiguration<T, TLogger>(T parameter, string name) where T : notnull where TLogger : notnull
+    public ILogger<TLogger> CreateWithExactConfiguration<T, TLogger>(T parameter, string name)
+        where T : notnull where TLogger : notnull
     {
         ArgumentNullException.ThrowIfNull(parameter);
         var logger = _logFactory.GetLogger(name);
@@ -132,7 +135,8 @@ public class DynamicNLogFactory
         {
             configuration.ConfigureLogger(parameter, logger);
         }
-        var iLogger = (ILogger)InvokeCtor(logger);
+
+        var iLogger = (ILogger) InvokeCtor(logger);
         return new Logger<TLogger>(new OneTimeFactory(iLogger));
     }
 
@@ -155,10 +159,10 @@ public class DynamicNLogFactory
 
     public bool SetLoggerProperty<T>(ILogger logger, string name, T parameter)
     {
-        if(logger.GetType() != _nLogLoggerType)
+        if (logger.GetType() != _nLogLoggerType)
             return false;
 
-        var nLogger = (Logger)_loggerField.GetValue(logger)!;
+        var nLogger = (Logger) _loggerField.GetValue(logger)!;
         nLogger.Properties[name] = parameter;
         return true;
     }
@@ -171,7 +175,12 @@ public class DynamicNLogFactory
         }
 
 
-        public void AddProvider(ILoggerProvider provider){} //Ignored
-        public void Dispose(){} //Ignored
+        public void AddProvider(ILoggerProvider provider)
+        {
+        } //Ignored
+
+        public void Dispose()
+        {
+        } //Ignored
     }
 }

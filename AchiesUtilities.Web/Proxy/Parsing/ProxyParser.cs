@@ -9,35 +9,35 @@ namespace AchiesUtilities.Web.Proxy.Parsing;
 [PublicAPI]
 public class ProxyParser
 {
+    public static ProxyParser Default => ProxyDefaultFormats.UniversalColonParser;
+
     /// <summary>
-    /// When testing different proxies using the HTTPs protocol, I received <see cref="AuthenticationException"/> exceptions. I still couldn’t figure out what was causing this error, so using HTTPs is essentially impossible. The best solution would be to use HTTP instead and this variable tells <see cref="ProxyParser.Parse"/> to automatically replace HTTPs with HTTP
+    ///     When testing different proxies using the HTTPs protocol, I received <see cref="AuthenticationException" />
+    ///     exceptions. I still couldn’t figure out what was causing this error, so using HTTPs is essentially impossible. The
+    ///     best solution would be to use HTTP instead and this variable tells <see cref="ProxyParser.Parse" /> to
+    ///     automatically replace HTTPs with HTTP
     /// </summary>
     public static bool UseOnlyHTTP { get; set; } = true;
-    public static class SchemeGroups
-    {
-        public const string Protocol = "PROTOCOL";
-        public const string Host = "HOST";
-        public const string Port = "PORT";
-        public const string Username = "USER";
-        public const string Password = "PASSWORD";
-    }
 
     public Regex Regex { get; }
     public bool ProtocolRequired { get; }
     public ProxyProtocol? DefaultProtocol { get; }
     public ProxyPatternProtocol AllowedProtocols { get; }
-    private readonly ProxyPatternProtocol[] _allowedProtocols;
     public ProxyPatternHostFormat AllowedFormats { get; }
 
     public PatternRequirement UsernameRequirement { get; }
     public PatternRequirement PasswordRequirement { get; }
 
     /// <summary>
-    /// If set to true, the parser will allow empty passwords when Username is present
+    ///     If set to true, the parser will allow empty passwords when Username is present
     /// </summary>
     public bool AllowEmptyPassword { get; }
 
-    public ProxyParser(Regex regex, bool protocolRequired, ProxyProtocol? defaultProtocol, ProxyPatternProtocol allowedProtocols, ProxyPatternHostFormat allowedFormats, PatternRequirement usernameRequirement, PatternRequirement passwordRequirement, bool allowEmptyPassword = false)
+    private readonly ProxyPatternProtocol[] _allowedProtocols;
+
+    public ProxyParser(Regex regex, bool protocolRequired, ProxyProtocol? defaultProtocol,
+        ProxyPatternProtocol allowedProtocols, ProxyPatternHostFormat allowedFormats,
+        PatternRequirement usernameRequirement, PatternRequirement passwordRequirement, bool allowEmptyPassword = false)
     {
         Regex = regex;
         ProtocolRequired = protocolRequired;
@@ -49,7 +49,6 @@ public class ProxyParser
         PasswordRequirement = passwordRequirement;
         AllowEmptyPassword = allowEmptyPassword;
         ValidateRegexAndState(regex);
-
     }
 
 
@@ -57,7 +56,7 @@ public class ProxyParser
     {
         var groups = regex.GetGroupNames();
         if (groups.All(g => g.Equals(SchemeGroups.Host) == false)
-                            ||
+            ||
             groups.All(g => g.Equals(SchemeGroups.Port) == false))
         {
             throw new InvalidOperationException(
@@ -87,7 +86,7 @@ public class ProxyParser
         if (AllowEmptyPassword == false && PasswordRequirement == PatternRequirement.Ignore)
         {
             throw new InvalidOperationException(
-                               $"Invalid scheme. {nameof(AllowEmptyPassword)} set to false, but {nameof(PasswordRequirement)} set to Ignore");
+                $"Invalid scheme. {nameof(AllowEmptyPassword)} set to false, but {nameof(PasswordRequirement)} set to Ignore");
         }
 
         return;
@@ -142,7 +141,7 @@ public class ProxyParser
         {
             if (trying) return null;
             throw new FormatException("Error while parsing ProxyData. Port is not specified");
-        }   
+        }
 
         string? username = null;
         string? password = null;
@@ -188,7 +187,8 @@ public class ProxyParser
         if (ProtocolRequired && protocolString == null)
         {
             if (trying) return null;
-            throw new FormatException($"Error while parsing ProxyData. Protocol required but no protocol specified in input");
+            throw new FormatException(
+                "Error while parsing ProxyData. Protocol required but no protocol specified in input");
         }
 
         if (protocolString != null)
@@ -201,20 +201,18 @@ public class ProxyParser
 
 
             var result = Enum.Parse<ProxyProtocol>(protocolString, true);
-            if(result == ProxyProtocol.HTTPs && UseOnlyHTTP)
+            if (result == ProxyProtocol.HTTPs && UseOnlyHTTP)
                 return ProxyProtocol.HTTP;
-            
-            return result;
 
+            return result;
         }
 
         if (UseOnlyHTTP && DefaultProtocol == ProxyProtocol.HTTPs)
             return ProxyProtocol.HTTP;
 
         return DefaultProtocol;
-
-
     }
+
     private string? ParseHost(Match match, bool trying)
     {
         var group = match.Groups[SchemeGroups.Host];
@@ -231,9 +229,7 @@ public class ProxyParser
         {
             if (trying) return null;
             throw new FormatException($"Error while parsing ProxyData. Host '{parsed}' format is Unknown");
-        };
-
-
+        }
 
         if (AllowedFormats.GetFlags().Any(format => Validate(format, parsed)))
         {
@@ -252,10 +248,11 @@ public class ProxyParser
                 ProxyPatternHostFormat.IPv6 => parsedType == UriHostNameType.IPv6,
                 ProxyPatternHostFormat.Domain => parsedType == UriHostNameType.Dns,
 
-                _ => false,
+                _ => false
             };
         }
     }
+
     private int? ParsePort(Match match, bool trying)
     {
         var group = match.Groups[SchemeGroups.Port];
@@ -272,9 +269,19 @@ public class ProxyParser
         if (trying) return null;
         throw new FormatException($"Error while parsing ProxyData. Provided port {input} is not valid Port");
     }
+
     private string? ParseCredential(Match match, string groupName)
     {
         var group = match.Groups[groupName];
         return group.Success ? group.Value : null;
+    }
+
+    public static class SchemeGroups
+    {
+        public const string Protocol = "PROTOCOL";
+        public const string Host = "HOST";
+        public const string Port = "PORT";
+        public const string Username = "USER";
+        public const string Password = "PASSWORD";
     }
 }

@@ -10,28 +10,27 @@ namespace AchiesUtilities.WPF.Models;
 public class RoUiObservableCollection<T> : IReadOnlyCollection<T>, INotifyCollectionChanged, INotifyPropertyChanged
 {
     private readonly ReadOnlyObservableCollection<T> _collection;
+
     public RoUiObservableCollection(ReadOnlyObservableCollection<T> readOnlyObservableCollection)
     {
         _collection = readOnlyObservableCollection;
-        ((INotifyCollectionChanged)_collection).CollectionChanged += OnCollectionChanged;
-        ((INotifyPropertyChanged)_collection).PropertyChanged += OnPropertyChanged;
+        ((INotifyCollectionChanged) _collection).CollectionChanged += OnCollectionChanged;
+        ((INotifyPropertyChanged) _collection).PropertyChanged += OnPropertyChanged;
     }
 
     private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            PropertyChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { PropertyChanged?.Invoke(this, e); });
     }
 
     private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            CollectionChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { CollectionChanged?.Invoke(this, e); });
     }
+
+
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     #region Wrapper
 
@@ -44,11 +43,8 @@ public class RoUiObservableCollection<T> : IReadOnlyCollection<T>, INotifyCollec
     {
         return GetEnumerator();
     }
+
     public int Count => _collection.Count;
+
     #endregion
-
-
-
-    public event NotifyCollectionChangedEventHandler? CollectionChanged;
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

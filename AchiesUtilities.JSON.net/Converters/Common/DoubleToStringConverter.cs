@@ -1,7 +1,7 @@
-﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+﻿using System.Globalization;
+using AchiesUtilities.Newtonsoft.JSON.Exceptions;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using System.Globalization;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
@@ -20,14 +20,15 @@ public class DoubleToStringConverter : JsonConverter<double>
         {
             if (reader.TokenType == JsonToken.Float)
             {
-                return (double)reader.Value!;
+                return (double) reader.Value!;
             }
 
             if (reader.TokenType == JsonToken.String)
             {
-                var value = (string)reader.Value!;
+                var value = (string) reader.Value!;
                 return double.Parse(value, CultureInfo.InvariantCulture);
             }
+
             throw JsonConverterException.Create(reader,
                 "Can't convert value to double. Type of value is not string", typeof(DoubleToStringConverter), null);
         }
@@ -60,16 +61,18 @@ public class DoubleToStringNullableConverter : JsonConverter<double?>
 
             if (reader.TokenType == JsonToken.Float)
             {
-                return (double)reader.Value!;
+                return (double) reader.Value!;
             }
 
             if (reader.TokenType == JsonToken.String)
             {
-                var value = (string)reader.Value!;
+                var value = (string) reader.Value!;
                 return double.Parse(value, CultureInfo.InvariantCulture);
             }
+
             throw JsonConverterException.Create(reader,
-                "Can't convert value to double. Type of value is not string", typeof(DoubleToStringNullableConverter), null);
+                "Can't convert value to double. Type of value is not string", typeof(DoubleToStringNullableConverter),
+                null);
         }
         catch (Exception ex)
             when (ex is not JsonConverterException)

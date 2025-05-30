@@ -13,11 +13,13 @@ public class BoolToIntConverter : JsonConverter<bool>
         writer.WriteValue(i);
     }
 
-    public override bool ReadJson(JsonReader reader, Type objectType, bool existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override bool ReadJson(JsonReader reader, Type objectType, bool existingValue, bool hasExistingValue,
+        JsonSerializer serializer)
     {
         if (reader.Value is not long value)
         {
-            throw JsonConverterException.Create(reader,"JsonReader value was null or not long. Error converting to bool.", typeof(BoolToIntConverter), null);
+            throw JsonConverterException.Create(reader,
+                "JsonReader value was null or not long. Error converting to bool.", typeof(BoolToIntConverter), null);
         }
 
         return value > 0;

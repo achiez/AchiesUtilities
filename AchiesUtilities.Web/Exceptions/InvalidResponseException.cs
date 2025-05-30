@@ -27,7 +27,6 @@ public class InvalidResponseException : Exception
     }
 
 
-
     public InvalidResponseException(HttpContent? responseContent)
     {
         ResponseContent = responseContent;
@@ -57,7 +56,8 @@ public class InvalidResponseException : Exception
         HttpResponseMessage = responseMessage;
     }
 
-    public InvalidResponseException(HttpResponseMessage? responseMessage, string message, Exception inner) : base(message,
+    public InvalidResponseException(HttpResponseMessage? responseMessage, string message, Exception inner) : base(
+        message,
         inner)
     {
         ResponseContent = responseMessage?.Content;
@@ -66,5 +66,7 @@ public class InvalidResponseException : Exception
 
     protected InvalidResponseException(
         SerializationInfo info,
-        StreamingContext context) : base(info, context){}
+        StreamingContext context) : base(info, context)
+    {
+    }
 }

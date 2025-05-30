@@ -22,41 +22,38 @@ public class UiObservableDictionary<TKey, TValue> :
     public UiObservableDictionary(ObservableDictionary<TKey, TValue> dictionary)
     {
         _collection = dictionary;
-        ((INotifyCollectionChanged)_collection).CollectionChanged += OnCollectionChanged;
-        ((INotifyPropertyChanged)_collection).PropertyChanged += OnPropertyChanged;
+        ((INotifyCollectionChanged) _collection).CollectionChanged += OnCollectionChanged;
+        ((INotifyPropertyChanged) _collection).PropertyChanged += OnPropertyChanged;
     }
 
     private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            PropertyChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { PropertyChanged?.Invoke(this, e); });
     }
 
     private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            CollectionChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { CollectionChanged?.Invoke(this, e); });
     }
+
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     #region Wrapper
 
     bool IDictionary.Contains(object key)
     {
-        return ((IDictionary)_collection).Contains(key);
+        return ((IDictionary) _collection).Contains(key);
     }
 
     IDictionaryEnumerator IDictionary.GetEnumerator()
     {
-        return ((IDictionary)_collection).GetEnumerator();
+        return ((IDictionary) _collection).GetEnumerator();
     }
 
     void IDictionary.Remove(object key)
     {
-        ((IDictionary)_collection).Remove(key);
+        ((IDictionary) _collection).Remove(key);
     }
 
     bool IDictionary.IsFixedSize => ((IDictionary) _collection).IsFixedSize;
@@ -80,12 +77,12 @@ public class UiObservableDictionary<TKey, TValue> :
 
     void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item)
     {
-        ((ICollection<KeyValuePair<TKey, TValue>>)_collection).Add(item);
+        ((ICollection<KeyValuePair<TKey, TValue>>) _collection).Add(item);
     }
 
     void IDictionary.Add(object key, object? value)
     {
-        ((IDictionary)_collection).Add(key, value);
+        ((IDictionary) _collection).Add(key, value);
     }
 
     void IDictionary.Clear()
@@ -95,37 +92,38 @@ public class UiObservableDictionary<TKey, TValue> :
 
     void ICollection<KeyValuePair<TKey, TValue>>.Clear()
     {
-        _collection.Clear();;
+        _collection.Clear();
+        ;
     }
 
     bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
     {
-       return ((IDictionary)_collection).Contains(item);
+        return ((IDictionary) _collection).Contains(item);
     }
 
     void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-        ((IDictionary)_collection).CopyTo(array, arrayIndex);
+        ((IDictionary) _collection).CopyTo(array, arrayIndex);
     }
 
     bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
     {
-         return ((ICollection<KeyValuePair<TKey, TValue>>)_collection).Remove(item);
+        return ((ICollection<KeyValuePair<TKey, TValue>>) _collection).Remove(item);
     }
 
     void ICollection.CopyTo(Array array, int index)
     {
-        ((ICollection)_collection).CopyTo(array, index);
+        ((ICollection) _collection).CopyTo(array, index);
     }
 
     int ICollection.Count => _collection.Count;
 
     bool ICollection.IsSynchronized => ((ICollection) _collection).IsSynchronized;
-    object ICollection.SyncRoot => ((ICollection)_collection).SyncRoot;
+    object ICollection.SyncRoot => ((ICollection) _collection).SyncRoot;
 
     int ICollection<KeyValuePair<TKey, TValue>>.Count => _collection.Count;
 
-    bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => ((IDictionary)_collection).IsReadOnly;
+    bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => ((IDictionary) _collection).IsReadOnly;
 
     public void Add(TKey key, TValue value)
     {
@@ -155,9 +153,9 @@ public class UiObservableDictionary<TKey, TValue> :
 
     ICollection<TKey> IDictionary<TKey, TValue>.Keys => _collection.Keys;
 
-    ICollection IDictionary.Values => ((IDictionary)_collection).Values;
+    ICollection IDictionary.Values => ((IDictionary) _collection).Values;
 
-    ICollection IDictionary.Keys => ((IDictionary)_collection).Keys;
+    ICollection IDictionary.Keys => ((IDictionary) _collection).Keys;
 
     ICollection<TValue> IDictionary<TKey, TValue>.Values => _collection.Values;
 
@@ -172,7 +170,4 @@ public class UiObservableDictionary<TKey, TValue> :
     }
 
     #endregion
-
-    public event NotifyCollectionChangedEventHandler? CollectionChanged;
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

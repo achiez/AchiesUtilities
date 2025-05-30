@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
-using AchiesUtilities.Commands.Core;
-
-namespace AchiesUtilities.Commands.Templates;
+﻿namespace AchiesUtilities.Commands.Templates;
 
 //public abstract class RegexCommandTemplate<TCommand> : ICommandTemplate<TCommand> where TCommand : IStringCommand
 //{
@@ -15,7 +11,6 @@ namespace AchiesUtilities.Commands.Templates;
 //        Regex = regex;
 //    }
 
-    
 //    protected StringCommand? Deconstruct(string command)
 //    {
 //        var match = Regex.Match(command);

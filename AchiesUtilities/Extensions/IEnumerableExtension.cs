@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.ObjectModel;
-using JetBrains.Annotations;
-
+﻿using JetBrains.Annotations;
 
 namespace AchiesUtilities.Extensions;
 
@@ -9,14 +6,15 @@ namespace AchiesUtilities.Extensions;
 public static class IEnumerableExtension
 {
     /// <summary>
-    /// Slow method <b>O(n)</b>
+    ///     Slow method <b>O(n)</b>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="collection"></param>
     /// <param name="other"></param>
     /// <param name="comparer"></param>
     /// <returns></returns>
-    public static bool CompareToOther<T>(this IEnumerable<T> collection, IEnumerable<T> other, EqualityComparer<T>? comparer = null)
+    public static bool CompareToOther<T>(this IEnumerable<T> collection, IEnumerable<T> other,
+        EqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
         var copyFirst = new List<T>(collection);
@@ -33,7 +31,7 @@ public static class IEnumerableExtension
             var second = copySecond.FirstOrDefault(item => comparer.Equals(item));
             if (second == null || comparer.Equals(first, second) == false)
                 return false;
-            
+
             copyFirst.RemoveAt(i);
             var indexSecond = copySecond.IndexOf(second);
             copySecond.RemoveAt(indexSecond);
@@ -43,7 +41,7 @@ public static class IEnumerableExtension
     }
 
     /// <summary>
-    /// Fast method
+    ///     Fast method
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="first"></param>
@@ -52,7 +50,7 @@ public static class IEnumerableExtension
     /// <returns></returns>
     public static bool CompareToOther<T>(this HashSet<T> first, HashSet<T> second, EqualityComparer<T>? comparer = null)
     {
-        if(first.Count != second.Count) return false;
+        if (first.Count != second.Count) return false;
         var copyFirst = new HashSet<T>(first, comparer);
         var copySecond = new HashSet<T>(second, comparer);
 
@@ -60,7 +58,7 @@ public static class IEnumerableExtension
     }
 
     /// <summary>
-    /// Average speed
+    ///     Average speed
     /// </summary>
     /// <typeparam name="TK"></typeparam>
     /// <typeparam name="TV"></typeparam>
@@ -69,8 +67,8 @@ public static class IEnumerableExtension
     /// <param name="keyComparer"></param>
     /// <param name="valueComparer"></param>
     /// <returns></returns>
-    public static bool CompareToOther<TK, TV>(this IDictionary<TK,TV> first, IDictionary<TK,TV> second, 
-        EqualityComparer<TK>? keyComparer = null, 
+    public static bool CompareToOther<TK, TV>(this IDictionary<TK, TV> first, IDictionary<TK, TV> second,
+        EqualityComparer<TK>? keyComparer = null,
         EqualityComparer<TV>? valueComparer = null) where TK : notnull
     {
         if (first.Count != second.Count) return false;
@@ -92,8 +90,9 @@ public static class IEnumerableExtension
 
         return true;
     }
+
     /// <summary>
-    /// Fast method
+    ///     Fast method
     /// </summary>
     /// <typeparam name="TK"></typeparam>
     /// <typeparam name="TV"></typeparam>

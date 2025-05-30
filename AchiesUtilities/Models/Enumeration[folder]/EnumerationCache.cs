@@ -8,9 +8,8 @@ internal static class EnumerationCacheFactory
     {
         var fields = typeof(TEnum).GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(f => f.FieldType == typeof(TEnum))
-            .Select(f => (TEnum)f.GetValue(null)!)
+            .Select(f => (TEnum) f.GetValue(null)!)
             .ToList();
-
 
 
         return new EnumerationCache<TEnum>(fields.AsReadOnly());

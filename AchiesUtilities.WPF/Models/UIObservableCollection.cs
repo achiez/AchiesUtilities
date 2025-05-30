@@ -14,25 +14,22 @@ public class UiObservableCollection<T> : ICollection<T>, INotifyCollectionChange
     public UiObservableCollection(ObservableCollection<T> observableCollection)
     {
         _collection = observableCollection;
-        ((INotifyCollectionChanged)_collection).CollectionChanged += OnCollectionChanged;
-        ((INotifyPropertyChanged)_collection).PropertyChanged += OnPropertyChanged;
+        ((INotifyCollectionChanged) _collection).CollectionChanged += OnCollectionChanged;
+        ((INotifyPropertyChanged) _collection).PropertyChanged += OnPropertyChanged;
     }
 
     private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            PropertyChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { PropertyChanged?.Invoke(this, e); });
     }
 
     private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        Application.Current.Dispatcher.BeginInvoke(() =>
-        {
-            CollectionChanged?.Invoke(this, e);
-        });
+        Application.Current.Dispatcher.BeginInvoke(() => { CollectionChanged?.Invoke(this, e); });
     }
+
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     #region Wrapper
 
@@ -54,7 +51,6 @@ public class UiObservableCollection<T> : ICollection<T>, INotifyCollectionChange
     public void Clear()
     {
         _collection.Clear();
-
     }
 
     public bool Contains(T item)
@@ -76,9 +72,4 @@ public class UiObservableCollection<T> : ICollection<T>, INotifyCollectionChange
     public bool IsReadOnly => false;
 
     #endregion
-
-    public event NotifyCollectionChangedEventHandler? CollectionChanged;
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-
 }

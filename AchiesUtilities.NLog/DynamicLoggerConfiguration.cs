@@ -10,19 +10,19 @@ public abstract class DynamicLoggerConfiguration
     {
         ParameterType = parameterType;
     }
+
     public abstract void ConfigureLogger<T>(T parameter, Logger logger);
 }
 
-
 public delegate void DynamicLoggerConfigurationDelegate<in T>(T parameter, Logger logger);
-
 
 public class DynamicLoggerConfiguration<TParam> : DynamicLoggerConfiguration
 {
     public DynamicLoggerConfigurationDelegate<TParam> ConfigurationDelegate { get; }
 
-    
-    public DynamicLoggerConfiguration(DynamicLoggerConfigurationDelegate<TParam> configurationDelegate) : base(typeof(TParam))
+
+    public DynamicLoggerConfiguration(DynamicLoggerConfigurationDelegate<TParam> configurationDelegate) : base(
+        typeof(TParam))
     {
         ConfigurationDelegate = configurationDelegate;
     }
@@ -33,6 +33,7 @@ public class DynamicLoggerConfiguration<TParam> : DynamicLoggerConfiguration
         {
             throw new InvalidOperationException("Invalid type");
         }
+
         ConfigurationDelegate(param, logger);
     }
 }

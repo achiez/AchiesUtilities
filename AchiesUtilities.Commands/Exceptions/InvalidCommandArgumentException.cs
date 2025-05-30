@@ -8,7 +8,8 @@ public class InvalidCommandArgumentException : Exception
     public string ArgumentName { get; }
     public string? ArgumentValue { get; }
 
-    public InvalidCommandArgumentException(string argumentName, string? argumentValue) : base($"Provided argument {argumentName} is invalid")
+    public InvalidCommandArgumentException(string argumentName, string? argumentValue) : base(
+        $"Provided argument {argumentName} is invalid")
     {
         ArgumentName = argumentName;
         ArgumentValue = argumentValue;
@@ -20,7 +21,8 @@ public class InvalidCommandArgumentException : Exception
         ArgumentValue = argumentValue;
     }
 
-    public InvalidCommandArgumentException(string argumentName, string? argumentValue, string? message, Exception? inner) 
+    public InvalidCommandArgumentException(string argumentName, string? argumentValue, string? message,
+        Exception? inner)
         : base(message, inner)
     {
         ArgumentName = argumentName;

@@ -1,5 +1,5 @@
-﻿using JetBrains.Annotations;
-using System.Net;
+﻿using System.Net;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web.Proxy;
 
@@ -7,16 +7,17 @@ namespace AchiesUtilities.Web.Proxy;
 public class DynamicProxy : IWebProxy
 {
     public Uri? Address { get; private set; }
+
     public ProxyData? Data
     {
         get => _data;
         set => SetData(value);
     }
-    private ProxyData? _data;
+
     public HashSet<string> BypassHosts { get; init; } = new();
 
     /// <summary>
-    /// Property is readonly
+    ///     Property is readonly
     /// </summary>
     public ICredentials? Credentials
     {
@@ -25,6 +26,7 @@ public class DynamicProxy : IWebProxy
     }
 
     private readonly ProxyCredentials _credentials = new();
+    private ProxyData? _data;
 
     public DynamicProxy(ProxyData? data = null)
     {
@@ -38,7 +40,9 @@ public class DynamicProxy : IWebProxy
         {
             Address = null;
             return;
-        };
+        }
+
+        ;
 
         var address = _data.ToString();
         Address = new Uri(address);
@@ -68,17 +72,17 @@ public class DynamicProxy : IWebProxy
     }
 }
 
-
 internal class ProxyCredentials : ICredentials
 {
-    private string? _username;
-    private string? _password;
-
     private NetworkCredential Credential => _credential ??= new NetworkCredential(_username, _password);
     private NetworkCredential? _credential;
     private bool _isSet;
+    private string? _password;
+    private string? _username;
 
-    public ProxyCredentials(){}
+    public ProxyCredentials()
+    {
+    }
 
     public ProxyCredentials(string? username, string? password)
     {
@@ -96,6 +100,7 @@ internal class ProxyCredentials : ICredentials
         {
             _credential = null;
         }
+
         _username = username;
         _password = password;
         _isSet = true;

@@ -7,8 +7,9 @@ namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 public class UnixTimeStampConverter : JsonConverter<UnixTimeStamp>
 {
     public const UnixFormat DEFAULT_FORMAT = UnixFormat.Seconds;
+
     /// <summary>
-    /// If <see langword="null"/> - <see cref="DEFAULT_FORMAT"/> (<see cref="UnixFormat.Seconds"/>) will be used
+    ///     If <see langword="null" /> - <see cref="DEFAULT_FORMAT" /> (<see cref="UnixFormat.Seconds" />) will be used
     /// </summary>
     public UnixFormat? Format { get; set; }
 
@@ -17,7 +18,9 @@ public class UnixTimeStampConverter : JsonConverter<UnixTimeStamp>
         Format = format;
     }
 
-    public UnixTimeStampConverter() { }
+    public UnixTimeStampConverter()
+    {
+    }
 
     public override void WriteJson(JsonWriter writer, UnixTimeStamp value, JsonSerializer serializer)
     {
@@ -25,13 +28,14 @@ public class UnixTimeStampConverter : JsonConverter<UnixTimeStamp>
         writer.WriteValue(timespanFormatted);
     }
 
-    public override UnixTimeStamp ReadJson(JsonReader reader, Type objectType, UnixTimeStamp existingValue, bool hasExistingValue, JsonSerializer serializer)
+    public override UnixTimeStamp ReadJson(JsonReader reader, Type objectType, UnixTimeStamp existingValue,
+        bool hasExistingValue, JsonSerializer serializer)
     {
         if (reader.Value is not long value)
             throw JsonConverterException.Create(reader,
-                "Error while converting value to UnixTimeStamp. Value was null or not long", typeof(NullableUnixTimeStampConverter), null);
+                "Error while converting value to UnixTimeStamp. Value was null or not long",
+                typeof(NullableUnixTimeStampConverter), null);
 
         return new UnixTimeStamp(value, Format ?? DEFAULT_FORMAT);
     }
-
 }

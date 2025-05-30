@@ -11,7 +11,8 @@ public class UnixTimeStampParseConverter : JsonConverter<UnixTimeStamp>
         writer.WriteValue(value.Seconds);
     }
 
-    public override UnixTimeStamp ReadJson(JsonReader reader, Type objectType, UnixTimeStamp existingValue, bool hasExistingValue,
+    public override UnixTimeStamp ReadJson(JsonReader reader, Type objectType, UnixTimeStamp existingValue,
+        bool hasExistingValue,
         JsonSerializer serializer)
     {
         try
