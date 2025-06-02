@@ -46,6 +46,26 @@ public static class WithPropertyLoggerExtensions
         return new StatefulLogger(logger, array);
     }
 
+    public static ILogger<T> WithProperties<T>(this ILogger<T> logger, IEnumerable<KeyValuePair<string, object?>> properties)
+    {
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(properties);
+        return new StatefulLogger<T>(logger, properties);
+    }
+
+    public static ILogger<T> WithProperties<T>(this ILogger<T> logger, params (string key, object? value)[] properties)
+    {
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(properties);
+        var array = new KeyValuePair<string, object?>[properties.Length];
+        for (var i = 0; i < properties.Length; i++)
+        {
+            var (key, value) = properties[i];
+            array[i] = new KeyValuePair<string, object?>(key, value);
+        }
+        return new StatefulLogger<T>(logger, array);
+    }
+
     public static IEnumerable<KeyValuePair<string, object?>> GetProperties(this ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(logger);

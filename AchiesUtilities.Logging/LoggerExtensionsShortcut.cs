@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 
 namespace AchiesUtilities.Logging;
 #pragma warning disable CA2254
@@ -17,7 +18,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogDebug(0, exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Debug(this ILogger logger, EventId eventId, Exception? exception, string? message, params object?[] args)
+    public static void Debug(this ILogger logger, EventId eventId, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Debug, eventId, exception, message, args);
     }
@@ -34,7 +35,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogDebug(0, "Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Debug(this ILogger logger, EventId eventId, string? message, params object?[] args)
+    public static void Debug(this ILogger logger, EventId eventId, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Debug, eventId, message, args);
     }
@@ -51,7 +52,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogDebug(exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Debug(this ILogger logger, Exception? exception, string? message, params object?[] args)
+    public static void Debug(this ILogger logger, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Debug, exception, message, args);
     }
@@ -67,7 +68,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogDebug("Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Debug(this ILogger logger, string? message, params object?[] args)
+    public static void Debug(this ILogger logger, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Debug, message, args);
     }
@@ -87,7 +88,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogTrace(0, exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Trace(this ILogger logger, EventId eventId, Exception? exception, string? message, params object?[] args)
+    public static void Trace(this ILogger logger, EventId eventId, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Trace, eventId, exception, message, args);
     }
@@ -104,7 +105,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogTrace(0, "Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Trace(this ILogger logger, EventId eventId, string? message, params object?[] args)
+    public static void Trace(this ILogger logger, EventId eventId, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Trace, eventId, message, args);
     }
@@ -121,7 +122,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogTrace(exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Trace(this ILogger logger, Exception? exception, string? message, params object?[] args)
+    public static void Trace(this ILogger logger, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Trace, exception, message, args);
     }
@@ -137,7 +138,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogTrace("Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Trace(this ILogger logger, string? message, params object?[] args)
+    public static void Trace(this ILogger logger, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Trace, message, args);
     }
@@ -157,7 +158,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogInformation(0, exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Info(this ILogger logger, EventId eventId, Exception? exception, string? message, params object?[] args)
+    public static void Info(this ILogger logger, EventId eventId, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Information, eventId, exception, message, args);
     }
@@ -174,7 +175,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogInformation(0, "Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Info(this ILogger logger, EventId eventId, string? message, params object?[] args)
+    public static void Info(this ILogger logger, EventId eventId, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Information, eventId, message, args);
     }
@@ -191,7 +192,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogInformation(exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Info(this ILogger logger, Exception? exception, string? message, params object?[] args)
+    public static void Info(this ILogger logger, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Information, exception, message, args);
     }
@@ -207,7 +208,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogInformation("Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Info(this ILogger logger, string? message, params object?[] args)
+    public static void Info(this ILogger logger, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Information, message, args);
     }
@@ -227,7 +228,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogWarning(0, exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Warn(this ILogger logger, EventId eventId, Exception? exception, string? message, params object?[] args)
+    public static void Warn(this ILogger logger, EventId eventId, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Warning, eventId, exception, message, args);
     }
@@ -244,7 +245,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogWarning(0, "Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Warn(this ILogger logger, EventId eventId, string? message, params object?[] args)
+    public static void Warn(this ILogger logger, EventId eventId, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Warning, eventId, message, args);
     }
@@ -261,7 +262,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogWarning(exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Warn(this ILogger logger, Exception? exception, string? message, params object?[] args)
+    public static void Warn(this ILogger logger, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Warning, exception, message, args);
     }
@@ -277,7 +278,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogWarning("Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Warn(this ILogger logger, string? message, params object?[] args)
+    public static void Warn(this ILogger logger, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Warning, message, args);
     }
@@ -297,7 +298,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogError(0, exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Error(this ILogger logger, EventId eventId, Exception? exception, string? message, params object?[] args)
+    public static void Error(this ILogger logger, EventId eventId, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Error, eventId, exception, message, args);
     }
@@ -314,7 +315,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogError(0, "Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Error(this ILogger logger, EventId eventId, string? message, params object?[] args)
+    public static void Error(this ILogger logger, EventId eventId, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Error, eventId, message, args);
     }
@@ -331,7 +332,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogError(exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Error(this ILogger logger, Exception? exception, string? message, params object?[] args)
+    public static void Error(this ILogger logger, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Error, exception, message, args);
     }
@@ -347,7 +348,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogError("Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Error(this ILogger logger, string? message, params object?[] args)
+    public static void Error(this ILogger logger, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Error, message, args);
     }
@@ -367,7 +368,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogCritical(0, exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Fatal(this ILogger logger, EventId eventId, Exception? exception, string? message, params object?[] args)
+    public static void Fatal(this ILogger logger, EventId eventId, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Critical, eventId, exception, message, args);
     }
@@ -384,7 +385,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogCritical(0, "Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Fatal(this ILogger logger, EventId eventId, string? message, params object?[] args)
+    public static void Fatal(this ILogger logger, EventId eventId, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Critical, eventId, message, args);
     }
@@ -401,7 +402,7 @@ public static class LoggerExtensionsShortcut
     /// logger.LogCritical(exception, "Error while processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Fatal(this ILogger logger, Exception? exception, string? message, params object?[] args)
+    public static void Fatal(this ILogger logger, Exception? exception, [StructuredMessageTemplate] string? message, params object?[] args)
     {
         logger.Log(LogLevel.Critical, exception, message, args);
     }
@@ -417,9 +418,8 @@ public static class LoggerExtensionsShortcut
     /// logger.LogCritical("Processing request from {Address}", address)
     /// </code>
     /// </example>
-    public static void Fatal(this ILogger logger, string? message, params object?[] args)
+    public static void Fatal(this ILogger logger, [StructuredMessageTemplate] string? message, params object?[] args)
     {
-
         logger.Log(LogLevel.Critical, message, args);
     }
 }

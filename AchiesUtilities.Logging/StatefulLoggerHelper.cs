@@ -27,4 +27,16 @@ public class LogProp
     {
         return new KeyValuePair<string, object?>(name, value);
     }
+
+    public static IEnumerable<KeyValuePair<string, object?>> Create(params (string key, object? value)[] properties)
+    {
+        ArgumentNullException.ThrowIfNull(properties);
+        var array = new KeyValuePair<string, object?>[properties.Length];
+        for (var i = 0; i < properties.Length; i++)
+        {
+            var (key, value) = properties[i];
+            array[i] = new KeyValuePair<string, object?>(key, value);
+        }
+        return array;
+    }
 }
