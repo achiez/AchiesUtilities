@@ -26,19 +26,14 @@ internal class StatefulLogger : ILogger, IEnumerable<KeyValuePair<string, object
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
         Func<TState, Exception?, string> formatter)
     {
-        if (state is IEnumerable<KeyValuePair<string, object?>> logValues)
+        if (state is IReadOnlyList<KeyValuePair<string, object?>>)
         {
-            var mergedState = _values.Merge(logValues);
-            _logger.Log(logLevel, eventId, mergedState, exception, Formatter);
+            var mergedState = new MergedLogState<TState>(state, _values);
+            _logger.Log(logLevel, eventId, mergedState, exception, (s, e) => formatter(state, e));
         }
         else
         {
             _logger.Log(logLevel, eventId, state, exception, formatter);
-        }
-
-        string Formatter(IEnumerable<KeyValuePair<string, object?>> x, Exception? e)
-        {
-            return formatter(state, exception);
         }
     }
 

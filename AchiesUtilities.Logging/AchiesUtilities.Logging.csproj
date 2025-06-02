@@ -10,8 +10,8 @@
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <IncludeSymbols>true</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	  <AssemblyVersion>1.0.1</AssemblyVersion>
-	  <Version>1.0.1</Version>
+	  <AssemblyVersion>1.0.2</AssemblyVersion>
+	  <Version>1.0.2</Version>
 	  <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
   </PropertyGroup>
 
