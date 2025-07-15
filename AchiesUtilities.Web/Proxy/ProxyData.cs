@@ -162,8 +162,9 @@ public class ProxyData
         return obj is ProxyData p && Equals(p);
     }
 
-    public bool Equals(ProxyData other)
+    public bool Equals(ProxyData? other)
     {
+        if (other is null) return false;
         return Protocol == other.Protocol
                && Address == other.Address
                && Port == other.Port

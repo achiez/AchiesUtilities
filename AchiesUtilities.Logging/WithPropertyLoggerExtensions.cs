@@ -1,3 +1,4 @@
+using AchiesUtilities.Models;
 using Microsoft.Extensions.Logging;
 
 namespace AchiesUtilities.Logging;
@@ -6,7 +7,6 @@ public static class WithPropertyLoggerExtensions
 {
     public static ILogger WithProperty(this ILogger logger, string name, object? value)
     {
-      
         ArgumentNullException.ThrowIfNull(logger);
         return new StatefulLogger(logger, [KeyValuePair.Create(name, value)]);
     }
@@ -44,6 +44,18 @@ public static class WithPropertyLoggerExtensions
         }
 
         return new StatefulLogger(logger, array);
+    }
+
+    public static ILogger WithProperty<TProperty>(this ILogger logger, PropertyKey<TProperty> key, TProperty value)
+    {
+        ArgumentNullException.ThrowIfNull(logger);
+        return logger.WithProperty(KeyValuePair.Create<string, object?>(key.Name, value));
+    }
+
+    public static ILogger<T> WithProperty<T, TProperty>(this ILogger<T> logger, PropertyKey<TProperty> key, TProperty value)
+    {
+        ArgumentNullException.ThrowIfNull(logger);
+        return logger.WithProperty<T>(key.Name, value);
     }
 
     public static ILogger<T> WithProperties<T>(this ILogger<T> logger, IEnumerable<KeyValuePair<string, object?>> properties)

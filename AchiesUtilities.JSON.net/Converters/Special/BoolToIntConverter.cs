@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
+namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 
 [PublicAPI]
 public class BoolToIntConverter : JsonConverter<bool>

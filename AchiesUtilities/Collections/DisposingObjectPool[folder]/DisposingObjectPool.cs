@@ -1,14 +1,12 @@
-﻿using System.Collections.Concurrent;
-using JetBrains.Annotations;
-using Microsoft.Extensions.Logging;
+﻿using JetBrains.Annotations;
+using System.Collections.Concurrent;
 
 namespace AchiesUtilities.Collections;
 
 [PublicAPI]
-public class DisposingObjectPool<T>(ILogger<DisposingObjectPool<T>>? logger) : IDisposable
+public class DisposingObjectPool<T> : IDisposable
     where T : IDisposable
 {
-    private ILogger<DisposingObjectPool<T>>? Logger { get; } = logger;
     private readonly ConcurrentDictionary<string, DisposingPooledItem<T>> _items = new();
     public event EventHandler<PooledObjectDisposedEventArgs<T>>? ItemExpired;
 
@@ -35,7 +33,6 @@ public class DisposingObjectPool<T>(ILogger<DisposingObjectPool<T>>? logger) : I
     public void DisposeItem(string itemName)
     {
         if (!_items.TryGetValue(itemName, out var pooled)) return;
-        Logger?.LogDebug("PooledItem {pooledItemName} disposed", itemName);
         pooled.ManualDispose();
     }
 
@@ -43,7 +40,6 @@ public class DisposingObjectPool<T>(ILogger<DisposingObjectPool<T>>? logger) : I
     {
         var client = new DisposingPooledItem<T>(innerFactory, lifeTime,
             (item, manual) => ObjectDisposingCallback(item, manual, key));
-        Logger?.LogDebug("PooledItem {pooledItemName} created", key);
         return client;
     }
 

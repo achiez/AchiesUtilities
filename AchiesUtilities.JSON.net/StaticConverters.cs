@@ -17,6 +17,8 @@ public static class StaticConverters
     public static JsonTimespanConverter TimeSpanConverter { get; } = new();
     public static UnixTimeStampConverter UnixTimeStampConverterSeconds { get; } = new();
     public static NullableUnixTimeStampConverter NullableUnixTimeStampConverterSeconds { get; } = new();
+    public static IPAddressConverter IPAddressConverter { get; } = new();
+    public static IPEndPointConverter IPEndPointConverter { get; } = new();
 
     #endregion
 
@@ -34,7 +36,9 @@ public static class StaticConverters
         [
             TimeSpanConverter,
             UnixTimeStampConverterSeconds,
-            NullableUnixTimeStampConverterSeconds
+            NullableUnixTimeStampConverterSeconds,
+            IPAddressConverter,
+            IPEndPointConverter
         ];
     }
 }

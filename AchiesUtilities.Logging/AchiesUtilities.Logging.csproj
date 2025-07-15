@@ -10,14 +10,17 @@
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <IncludeSymbols>true</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	  <AssemblyVersion>1.0.2</AssemblyVersion>
-	  <Version>1.0.2</Version>
+	  <AssemblyVersion>1.0.3</AssemblyVersion>
+	  <Version>1.0.3</Version>
 	  <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AchiesUtilities\AchiesUtilities.csproj" />
   </ItemGroup>
 
 </Project>
