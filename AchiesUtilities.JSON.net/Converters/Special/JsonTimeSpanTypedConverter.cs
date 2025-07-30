@@ -2,6 +2,7 @@
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 
+[Obsolete("Not recommended")]
 public class JsonTimeSpanTypedConverter : JsonConverter<TimeSpan>
 {
     public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)

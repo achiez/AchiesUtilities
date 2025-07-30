@@ -1,24 +1,29 @@
 ﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 
-public class JsonTimespanConverter : JsonConverter<TimeSpan>
+[PublicAPI]
+public class JsonTimespanConverter : StructJsonConverter<TimeSpan>
 {
-    public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
+    protected override void WriteValue(JsonWriter writer, TimeSpan value)
     {
         writer.WriteValue(value.Ticks);
     }
 
-    public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue,
-        JsonSerializer serializer)
+    protected override TimeSpan ParseValue(JsonReader reader)
     {
-        if (reader.Value is not long value)
-            throw JsonConverterException.Create(reader,
-                "Error while converting value to TimeSpan. Value was null or not long.", typeof(JsonTimespanConverter),
-                null);
+        if (reader.Value is not long ticks)
+        {
+            throw JsonConverterException.Create(
+                reader,
+                "Error while converting value to TimeSpan. Value was null or not long.",
+                typeof(JsonTimespanConverter),
+                null
+            );
+        }
 
-
-        return new TimeSpan(value);
+        return new TimeSpan(ticks);
     }
 }

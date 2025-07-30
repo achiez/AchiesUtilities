@@ -5,6 +5,11 @@ using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 
+[Obsolete(
+    "This Nullable converter is deprecated and will be removed in future versions. " +
+    "Use the corresponding non-nullable converter instead; all new converters now support both " +
+    "nullable and non-nullable types automatically.",
+    error: false)]
 public class NullableUnixTimeStampConverter : JsonConverter<UnixTimeStamp?>
 {
     public const UnixFormat DEFAULT_FORMAT = UnixFormat.Seconds;

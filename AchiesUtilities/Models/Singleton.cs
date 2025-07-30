@@ -7,7 +7,7 @@ namespace AchiesUtilities.Models;
 public class Singleton<T> where T : class
 {
     // ReSharper disable once StaticMemberInGenericType
-    private static readonly Lock Lock = new();
+    private static readonly object Lock = new();
 
     private static T? _instance;
 

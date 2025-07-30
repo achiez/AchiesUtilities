@@ -1,28 +1,42 @@
 ﻿using AchiesUtilities.Models;
 using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 
-public class UnixTimeStampParseConverter : JsonConverter<UnixTimeStamp>
+[PublicAPI]
+public class UnixTimeStampParseConverter : StructJsonConverter<UnixTimeStamp>
 {
-    public override void WriteJson(JsonWriter writer, UnixTimeStamp value, JsonSerializer serializer)
+    protected override void WriteValue(JsonWriter writer, UnixTimeStamp value)
     {
         writer.WriteValue(value.Seconds);
     }
 
-    public override UnixTimeStamp ReadJson(JsonReader reader, Type objectType, UnixTimeStamp existingValue,
-        bool hasExistingValue,
-        JsonSerializer serializer)
+    protected override UnixTimeStamp ParseValue(JsonReader reader)
     {
         try
         {
-            return UnixTimeStamp.Parse(reader.Value!);
+            if (reader.Value is null)
+            {
+                throw JsonConverterException.Create(
+                    reader,
+                    $"Error while parsing {nameof(UnixTimeStamp)}. Value is null.",
+                    typeof(UnixTimeStampParseConverter),
+                    null
+                );
+            }
+
+            return UnixTimeStamp.Parse(reader.Value);
         }
-        catch (Exception e)
+        catch (Exception e) when (e is not JsonConverterException)
         {
-            throw JsonConverterException.Create(reader, $"Error while parsing {nameof(UnixTimeStamp)}.",
-                typeof(UnixTimeStampParseConverter), e);
+            throw JsonConverterException.Create(
+                reader,
+                $"Error while parsing {nameof(UnixTimeStamp)}.",
+                typeof(UnixTimeStampParseConverter),
+                e
+            );
         }
     }
 }

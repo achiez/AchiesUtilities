@@ -6,43 +6,48 @@ using Newtonsoft.Json;
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
 [PublicAPI]
-public class DecimalToStringConverter : JsonConverter<decimal>
+public class DecimalToStringConverter : StructJsonConverter<decimal>
 {
-    public override void WriteJson(JsonWriter writer, decimal value, JsonSerializer serializer)
+    protected override void WriteValue(JsonWriter writer, decimal value)
     {
         writer.WriteValue(value.ToString(CultureInfo.InvariantCulture));
     }
 
-    public override decimal ReadJson(JsonReader reader, Type objectType, decimal existingValue, bool hasExistingValue,
-        JsonSerializer serializer)
+    protected override decimal ParseValue(JsonReader reader)
     {
         try
         {
-            if (reader.TokenType == JsonToken.Float)
+            return reader.TokenType switch
             {
-                var d = (double) reader.Value!;
-                return Convert.ToDecimal(d);
-            }
-
-            if (reader.TokenType == JsonToken.String)
-            {
-                var value = (string) reader.Value!;
-                return decimal.Parse(value, CultureInfo.InvariantCulture);
-            }
-
-            throw JsonConverterException.Create(reader,
-                "Can't convert value to decimal. Type of value is not string", typeof(DecimalToStringConverter), null);
+                JsonToken.Float => Convert.ToDecimal((double)reader.Value!, CultureInfo.InvariantCulture),
+                JsonToken.Integer => Convert.ToDecimal(reader.Value!, CultureInfo.InvariantCulture),
+                JsonToken.String => decimal.Parse((string)reader.Value!, CultureInfo.InvariantCulture),
+                _ => throw JsonConverterException.Create(
+                    reader,
+                    "Can't convert value to decimal. Type of value is not string, integer, or float.",
+                    typeof(DecimalToStringConverter),
+                    null)
+            };
         }
-        catch (Exception ex)
-            when (ex is not JsonConverterException)
+        catch (Exception ex) when (ex is not JsonConverterException)
         {
-            throw JsonConverterException.Create(reader, "Error while converting value to decimal. See inner exception.",
-                typeof(DecimalToStringConverter), ex);
+            throw JsonConverterException.Create(
+                reader,
+                "Error while converting value to decimal. See inner exception.",
+                typeof(DecimalToStringConverter),
+                ex
+            );
         }
     }
 }
 
+
 [PublicAPI]
+[Obsolete(
+    "This Nullable converter is deprecated and will be removed in future versions. " +
+    "Use the corresponding non-nullable converter instead; all new converters now support both " +
+    "nullable and non-nullable types automatically.",
+    error: false)]
 public class DecimalToStringNullableConverter : JsonConverter<decimal?>
 {
     public override void WriteJson(JsonWriter writer, decimal? value, JsonSerializer serializer)

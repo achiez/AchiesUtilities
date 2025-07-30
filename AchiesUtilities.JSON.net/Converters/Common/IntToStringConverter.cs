@@ -5,42 +5,47 @@ using Newtonsoft.Json;
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
 [PublicAPI]
-public class IntToStringConverter : JsonConverter<int>
+public class IntToStringConverter : StructJsonConverter<int>
 {
-    public override void WriteJson(JsonWriter writer, int value, JsonSerializer serializer)
+    protected override void WriteValue(JsonWriter writer, int value)
     {
         writer.WriteValue(value.ToString());
     }
 
-    public override int ReadJson(JsonReader reader, Type objectType, int existingValue, bool hasExistingValue,
-        JsonSerializer serializer)
+    protected override int ParseValue(JsonReader reader)
     {
         try
         {
-            if (reader.TokenType == JsonToken.Integer)
+            return reader.TokenType switch
             {
-                return (int) reader.Value!;
-            }
-
-            if (reader.TokenType == JsonToken.String)
-            {
-                var value = (string) reader.Value!;
-                return int.Parse(value);
-            }
-
-            throw JsonConverterException.Create(reader,
-                "Can't convert value to int32. Type of value is not string", typeof(IntToStringConverter), null);
+                JsonToken.Integer => Convert.ToInt32(reader.Value!),
+                JsonToken.String => int.Parse((string)reader.Value!),
+                _ => throw JsonConverterException.Create(
+                    reader,
+                    "Can't convert value to Int32. Value is not string or integer.",
+                    typeof(IntToStringConverter),
+                    null
+                )
+            };
         }
-        catch (Exception ex)
-            when (ex is not JsonConverterException)
+        catch (Exception ex) when (ex is not JsonConverterException)
         {
-            throw JsonConverterException.Create(reader, "Error while converting value to int32.",
-                typeof(IntToStringConverter), ex);
+            throw JsonConverterException.Create(
+                reader,
+                "Error while converting value to Int32.",
+                typeof(IntToStringConverter),
+                ex
+            );
         }
     }
 }
 
 [PublicAPI]
+[Obsolete(
+    "This Nullable converter is deprecated and will be removed in future versions. " +
+    "Use the corresponding non-nullable converter instead; all new converters now support both " +
+    "nullable and non-nullable types automatically.",
+    error: false)]
 public class IntToStringNullableConverter : JsonConverter<int?>
 {
     public override void WriteJson(JsonWriter writer, int? value, JsonSerializer serializer)

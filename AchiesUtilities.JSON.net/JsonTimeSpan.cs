@@ -1,6 +1,6 @@
 ﻿namespace AchiesUtilities.Newtonsoft.JSON;
 
-public struct JsonTimeSpan
+public readonly struct JsonTimeSpan
 {
     public long Ticks { get; }
 
