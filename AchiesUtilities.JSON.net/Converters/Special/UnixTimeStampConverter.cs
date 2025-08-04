@@ -15,7 +15,13 @@ public class UnixTimeStampConverter : StructJsonConverter<UnixTimeStamp>
     /// </summary>
     public UnixFormat? Format { get; set; }
 
-    public UnixTimeStampConverter(UnixFormat? format = null)
+    [UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
+    public UnixTimeStampConverter()
+    {
+        Format = DEFAULT_FORMAT;
+    }
+
+    public UnixTimeStampConverter(UnixFormat format)
     {
         Format = format;
     }
