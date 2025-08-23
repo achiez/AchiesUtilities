@@ -21,12 +21,13 @@ public abstract class StructJsonConverter<T> : JsonConverter where T : struct
             return;
         }
 
-        WriteValue(writer, (T)value);
+        WriteValue(writer, (T) value, serializer);
     }
 
-    public sealed override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public sealed override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
-        bool isNullable = Nullable.GetUnderlyingType(objectType) != null;
+        var isNullable = Nullable.GetUnderlyingType(objectType) != null;
 
         if (reader.TokenType == JsonToken.Null)
         {
@@ -43,8 +44,8 @@ public abstract class StructJsonConverter<T> : JsonConverter where T : struct
 
         try
         {
-            var parsed = ParseValue(reader);
-            return isNullable ? (T?)parsed : parsed;
+            var parsed = ParseValue(reader, objectType, existingValue, serializer);
+            return isNullable ? (T?) parsed : parsed;
         }
         catch (Exception ex) when (ex is not JsonConverterException)
         {
@@ -57,6 +58,6 @@ public abstract class StructJsonConverter<T> : JsonConverter where T : struct
         }
     }
 
-    protected abstract void WriteValue(JsonWriter writer, T value);
-    protected abstract T ParseValue(JsonReader reader);
+    protected abstract void WriteValue(JsonWriter writer, T value, JsonSerializer serializer);
+    protected abstract T ParseValue(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer);
 }

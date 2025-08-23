@@ -7,19 +7,20 @@ namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 [PublicAPI]
 public class LongToStringConverter : StructJsonConverter<long>
 {
-    protected override void WriteValue(JsonWriter writer, long value)
+    protected override void WriteValue(JsonWriter writer, long value, JsonSerializer serializer)
     {
         writer.WriteValue(value.ToString());
     }
 
-    protected override long ParseValue(JsonReader reader)
+    protected override long ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         try
         {
             return reader.TokenType switch
             {
-                JsonToken.Integer => (long)reader.Value!,
-                JsonToken.String => long.Parse((string)reader.Value!),
+                JsonToken.Integer => (long) reader.Value!,
+                JsonToken.String => long.Parse((string) reader.Value!),
                 _ => throw JsonConverterException.Create(
                     reader,
                     "Can't convert value to Int64. Type of value is not string or integer.",
@@ -40,13 +41,12 @@ public class LongToStringConverter : StructJsonConverter<long>
     }
 }
 
-
 [PublicAPI]
 [Obsolete(
     "This Nullable converter is deprecated and will be removed in future versions. " +
     "Use the corresponding non-nullable converter instead; all new converters now support both " +
     "nullable and non-nullable types automatically.",
-    error: false)]
+    false)]
 public class LongToStringNullableConverter : JsonConverter<long?>
 {
     public override void WriteJson(JsonWriter writer, long? value, JsonSerializer serializer)

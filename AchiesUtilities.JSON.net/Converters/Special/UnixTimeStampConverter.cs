@@ -26,13 +26,14 @@ public class UnixTimeStampConverter : StructJsonConverter<UnixTimeStamp>
         Format = format;
     }
 
-    protected override void WriteValue(JsonWriter writer, UnixTimeStamp value)
+    protected override void WriteValue(JsonWriter writer, UnixTimeStamp value, JsonSerializer serializer)
     {
         var timespanFormatted = value.ToLong(Format ?? DEFAULT_FORMAT);
         writer.WriteValue(timespanFormatted);
     }
 
-    protected override UnixTimeStamp ParseValue(JsonReader reader)
+    protected override UnixTimeStamp ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.Value is not long value)
         {

@@ -8,20 +8,21 @@ namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 [PublicAPI]
 public class DecimalToStringConverter : StructJsonConverter<decimal>
 {
-    protected override void WriteValue(JsonWriter writer, decimal value)
+    protected override void WriteValue(JsonWriter writer, decimal value, JsonSerializer serializer)
     {
         writer.WriteValue(value.ToString(CultureInfo.InvariantCulture));
     }
 
-    protected override decimal ParseValue(JsonReader reader)
+    protected override decimal ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         try
         {
             return reader.TokenType switch
             {
-                JsonToken.Float => Convert.ToDecimal((double)reader.Value!, CultureInfo.InvariantCulture),
+                JsonToken.Float => Convert.ToDecimal((double) reader.Value!, CultureInfo.InvariantCulture),
                 JsonToken.Integer => Convert.ToDecimal(reader.Value!, CultureInfo.InvariantCulture),
-                JsonToken.String => decimal.Parse((string)reader.Value!, CultureInfo.InvariantCulture),
+                JsonToken.String => decimal.Parse((string) reader.Value!, CultureInfo.InvariantCulture),
                 _ => throw JsonConverterException.Create(
                     reader,
                     "Can't convert value to decimal. Type of value is not string, integer, or float.",
@@ -41,13 +42,12 @@ public class DecimalToStringConverter : StructJsonConverter<decimal>
     }
 }
 
-
 [PublicAPI]
 [Obsolete(
     "This Nullable converter is deprecated and will be removed in future versions. " +
     "Use the corresponding non-nullable converter instead; all new converters now support both " +
     "nullable and non-nullable types automatically.",
-    error: false)]
+    false)]
 public class DecimalToStringNullableConverter : JsonConverter<decimal?>
 {
     public override void WriteJson(JsonWriter writer, decimal? value, JsonSerializer serializer)

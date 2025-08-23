@@ -6,16 +6,15 @@ using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web.Proxy.Parsing;
 
+//TODO: Add static methods for common patterns
 [PublicAPI]
 public class ProxyParser
 {
     public static ProxyParser Default => ProxyDefaultFormats.UniversalColonParser;
 
     /// <summary>
-    ///     When testing different proxies using the HTTPs protocol, I received <see cref="AuthenticationException" />
-    ///     exceptions. I still couldn’t figure out what was causing this error, so using HTTPs is essentially impossible. The
-    ///     best solution would be to use HTTP instead and this variable tells <see cref="ProxyParser.Parse" /> to
-    ///     automatically replace HTTPs with HTTP
+    /// Recommended to use <see langword="true" /> to avoid accidental usage of HTTPS proxies, which are often not supported.
+    /// Default is <see langword="true" />
     /// </summary>
     public static bool UseOnlyHTTP { get; set; } = true;
 

@@ -1,7 +1,7 @@
-﻿using AchiesUtilities.Newtonsoft.JSON.Exceptions;
+﻿using System.Net;
+using AchiesUtilities.Newtonsoft.JSON.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net;
 
 namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 
@@ -14,7 +14,8 @@ public class IPEndPointConverter : JsonConverter<IPEndPoint>
             writer.WriteNull();
             return;
         }
-        IPEndPoint ep = (IPEndPoint)value;
+
+        var ep = value;
         writer.WriteStartObject();
         writer.WritePropertyName("Address");
         serializer.Serialize(writer, ep.Address);
@@ -23,13 +24,15 @@ public class IPEndPointConverter : JsonConverter<IPEndPoint>
         writer.WriteEndObject();
     }
 
-    public override IPEndPoint? ReadJson(JsonReader reader, Type objectType, IPEndPoint? existingValue, bool hasExistingValue,
+    public override IPEndPoint? ReadJson(JsonReader reader, Type objectType, IPEndPoint? existingValue,
+        bool hasExistingValue,
         JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
         {
             return null;
         }
+
         if (reader.TokenType != JsonToken.StartObject)
         {
             throw new JsonConverterException($"Unexpected token {reader.TokenType} when parsing IPEndPoint.");
@@ -37,7 +40,6 @@ public class IPEndPointConverter : JsonConverter<IPEndPoint>
 
         try
         {
-
             var jo = JObject.Load(reader);
             var address = jo["Address"]!.ToObject<IPAddress>(serializer)!;
             var port = (int) jo["Port"]!;

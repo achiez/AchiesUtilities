@@ -7,10 +7,9 @@ internal class StatefulLogger : ILogger, IEnumerable<KeyValuePair<string, object
 {
     private readonly ILogger _logger;
     private readonly Dictionary<string, object?> _values;
-    
+
     public StatefulLogger(ILogger logger, IEnumerable<KeyValuePair<string, object?>> values)
     {
-       
         _values = values.ToDictionary();
         if (logger is StatefulLogger sl)
         {

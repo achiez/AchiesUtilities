@@ -7,12 +7,13 @@ namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 [PublicAPI]
 public class BoolToIntConverter : StructJsonConverter<bool>
 {
-    protected override void WriteValue(JsonWriter writer, bool value)
+    protected override void WriteValue(JsonWriter writer, bool value, JsonSerializer serializer)
     {
         writer.WriteValue(value ? 1 : 0);
     }
 
-    protected override bool ParseValue(JsonReader reader)
+    protected override bool ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.Value is not long value)
         {

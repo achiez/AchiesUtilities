@@ -1,9 +1,11 @@
 ﻿using System.Collections.Specialized;
 using System.Text;
 using System.Web;
+using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web.Extensions;
 
+[PublicAPI]
 public static class NameValueCollectionExtension
 {
     public static string ToQueryString(this IEnumerable<KeyValuePair<string, string>> collection, bool encode = true)

@@ -8,12 +8,13 @@ namespace AchiesUtilities.Newtonsoft.JSON.Converters.Common;
 [PublicAPI]
 public class DoubleToStringConverter : StructJsonConverter<double>
 {
-    protected override void WriteValue(JsonWriter writer, double value)
+    protected override void WriteValue(JsonWriter writer, double value, JsonSerializer serializer)
     {
         writer.WriteValue(value.ToString(CultureInfo.InvariantCulture));
     }
 
-    protected override double ParseValue(JsonReader reader)
+    protected override double ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         try
         {
@@ -21,7 +22,7 @@ public class DoubleToStringConverter : StructJsonConverter<double>
             {
                 JsonToken.Float => Convert.ToDouble(reader.Value!, CultureInfo.InvariantCulture),
                 JsonToken.Integer => Convert.ToDouble(reader.Value!, CultureInfo.InvariantCulture),
-                JsonToken.String => double.Parse((string)reader.Value!, CultureInfo.InvariantCulture),
+                JsonToken.String => double.Parse((string) reader.Value!, CultureInfo.InvariantCulture),
                 _ => throw JsonConverterException.Create(
                     reader,
                     "Can't convert value to double. Type of value is not string, integer, or float.",
@@ -41,13 +42,12 @@ public class DoubleToStringConverter : StructJsonConverter<double>
     }
 }
 
-
 [PublicAPI]
 [Obsolete(
     "This Nullable converter is deprecated and will be removed in future versions. " +
     "Use the corresponding non-nullable converter instead; all new converters now support both " +
     "nullable and non-nullable types automatically.",
-    error: false)]
+    false)]
 public class DoubleToStringNullableConverter : JsonConverter<double?>
 {
     public override void WriteJson(JsonWriter writer, double? value, JsonSerializer serializer)

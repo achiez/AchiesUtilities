@@ -7,12 +7,13 @@ namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 [PublicAPI]
 public class JsonTimespanConverter : StructJsonConverter<TimeSpan>
 {
-    protected override void WriteValue(JsonWriter writer, TimeSpan value)
+    protected override void WriteValue(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
     {
         writer.WriteValue(value.Ticks);
     }
 
-    protected override TimeSpan ParseValue(JsonReader reader)
+    protected override TimeSpan ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         if (reader.Value is not long ticks)
         {

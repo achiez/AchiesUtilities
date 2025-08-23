@@ -15,8 +15,7 @@ public static class ProxyDefaultFormats
                                                                + "(?:localhost)"
                                                                + ')';
 
-    [RegexPattern]
-    private static readonly string
+    [RegexPattern] private static readonly string
         _port = @"(?<" + $"{ProxyParser.SchemeGroups.Port}" +
                 @">\d{1,5})"; //Not the best, but it's easier than full validation
 
@@ -40,7 +39,7 @@ public static class ProxyDefaultFormats
 
 
     /// <summary>
-    ///     <c>{PROTOCOL://}{USER}:{PASS}@{HOST}:{PORT}:</c><br />
+    ///     <c>{PROTOCOL://}{USER}:{PASS}@{HOST}:{PORT}</c><br />
     ///     Protocol and USER:PASS are optional
     /// </summary>
     public static readonly Regex UniversalSignAt = new(
@@ -53,6 +52,10 @@ public static class ProxyDefaultFormats
         RegexOptions.Compiled);
 
 
+    /// <summary>
+    ///     <c>{PROTOCOL://}:{HOST}:{PORT}:{USER}:{PASS}</c><br />
+    ///     Protocol and USER:PASS are optional
+    /// </summary>
     public static readonly ProxyParser UniversalColonParser = new(
         UniversalColon,
         false,
@@ -63,13 +66,32 @@ public static class ProxyDefaultFormats
         PatternRequirement.Optional
     );
 
-    public static readonly ProxyParser UniversalSignAtParser = new(
-        UniversalSignAt,
+    /// <summary>
+    ///     <c>{PROTOCOL://}:{HOST}:{PORT}:{USER}:{PASS}</c><br />
+    ///     Protocol and USER:PASS are required
+    /// </summary>
+    public static readonly ProxyParser CredentialsRequiredColonParser = new(
+        UniversalColon,
         false,
         ProxyProtocol.HTTP,
         ProxyPatternProtocol.All,
         ProxyPatternHostFormat.All,
         PatternRequirement.Required,
         PatternRequirement.Required
+    );
+
+
+    /// <summary>
+    ///     <c>{PROTOCOL://}{USER}:{PASS}@{HOST}:{PORT}</c><br />
+    ///     Protocol and USER:PASS are optional
+    /// </summary>
+    public static readonly ProxyParser UniversalSignAtParser = new(
+        UniversalSignAt,
+        false,
+        ProxyProtocol.HTTP,
+        ProxyPatternProtocol.All,
+        ProxyPatternHostFormat.All,
+        PatternRequirement.Optional,
+        PatternRequirement.Optional
     );
 }

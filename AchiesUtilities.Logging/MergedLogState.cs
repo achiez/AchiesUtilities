@@ -4,8 +4,10 @@ namespace AchiesUtilities.Logging;
 
 internal class MergedLogState<TState> : IReadOnlyList<KeyValuePair<string, object?>>
 {
-    private readonly TState _originalState;
+    public KeyValuePair<string, object?> this[int index] => _merged[index];
+    public int Count => _merged.Count;
     private readonly IReadOnlyList<KeyValuePair<string, object?>> _merged;
+    private readonly TState _originalState;
 
     public MergedLogState(TState originalState, IEnumerable<KeyValuePair<string, object?>> additional)
     {
@@ -27,10 +29,18 @@ internal class MergedLogState<TState> : IReadOnlyList<KeyValuePair<string, objec
         _merged = merged;
     }
 
-    public KeyValuePair<string, object?> this[int index] => _merged[index];
-    public int Count => _merged.Count;
-    public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() => _merged.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public IEnumerator<KeyValuePair<string, object?>> GetEnumerator()
+    {
+        return _merged.GetEnumerator();
+    }
 
-    public override string ToString() => _originalState?.ToString() ?? "";
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public override string ToString()
+    {
+        return _originalState?.ToString() ?? "";
+    }
 }

@@ -52,13 +52,15 @@ public static class WithPropertyLoggerExtensions
         return logger.WithProperty(KeyValuePair.Create<string, object?>(key.Name, value));
     }
 
-    public static ILogger<T> WithProperty<T, TProperty>(this ILogger<T> logger, PropertyKey<TProperty> key, TProperty value)
+    public static ILogger<T> WithProperty<T, TProperty>(this ILogger<T> logger, PropertyKey<TProperty> key,
+        TProperty value)
     {
         ArgumentNullException.ThrowIfNull(logger);
         return logger.WithProperty<T>(key.Name, value);
     }
 
-    public static ILogger<T> WithProperties<T>(this ILogger<T> logger, IEnumerable<KeyValuePair<string, object?>> properties)
+    public static ILogger<T> WithProperties<T>(this ILogger<T> logger,
+        IEnumerable<KeyValuePair<string, object?>> properties)
     {
         ArgumentNullException.ThrowIfNull(logger);
         ArgumentNullException.ThrowIfNull(properties);
@@ -75,6 +77,7 @@ public static class WithPropertyLoggerExtensions
             var (key, value) = properties[i];
             array[i] = new KeyValuePair<string, object?>(key, value);
         }
+
         return new StatefulLogger<T>(logger, array);
     }
 
@@ -85,6 +88,7 @@ public static class WithPropertyLoggerExtensions
         {
             return sl.ToList();
         }
+
         return [];
     }
 }

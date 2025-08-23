@@ -13,10 +13,12 @@ internal static class StatefulLoggerHelper
         {
             properties[kvp.Key] = kvp.Value;
         }
+
         foreach (var kvp in second)
         {
             properties[kvp.Key] = kvp.Value;
         }
+
         return properties;
     }
 }
@@ -37,6 +39,7 @@ public class LogProp
             var (key, value) = properties[i];
             array[i] = new KeyValuePair<string, object?>(key, value);
         }
+
         return array;
     }
 }

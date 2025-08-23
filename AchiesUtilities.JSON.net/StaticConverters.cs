@@ -11,21 +11,11 @@ public static class StaticConverters
     /// <summary>
     ///     Include all defaults instances of <see cref="JsonConverter" />:<br />
     ///     <see cref="JsonTimespanConverter" /><br />
-    ///     <see cref="UnixTimeStampConverterSeconds" /><br/>
-    ///     <see cref="IPAddressConverter"/><br/>
-    ///     <see cref="IPEndPointConverter"/><br/>
-    ///     
+    ///     <see cref="Converters.Special.UnixTimeStampConverter" /> (seconds)<br />
+    ///     <see cref="Converters.Common.IPAddressConverter" /><br />
+    ///     <see cref="Converters.Common.IPEndPointConverter" /><br />
     /// </summary>
     public static IList<JsonConverter> AllDefaultConverters { get; }
-
-    #region Default
-
-    public static JsonTimespanConverter TimeSpanConverter { get; } = new();
-    public static UnixTimeStampConverter UnixTimeStampConverterSeconds { get; } = new();
-    public static IPAddressConverter IPAddressConverter { get; } = new();
-    public static IPEndPointConverter IPEndPointConverter { get; } = new();
-
-    #endregion
 
 
     #region Special
@@ -36,7 +26,7 @@ public static class StaticConverters
 
     static StaticConverters()
     {
-        AllDefaultConverters = 
+        AllDefaultConverters =
         [
             TimeSpanConverter,
             UnixTimeStampConverterSeconds,
@@ -44,4 +34,13 @@ public static class StaticConverters
             IPEndPointConverter
         ];
     }
+
+    #region Default
+
+    public static JsonTimespanConverter TimeSpanConverter { get; } = new();
+    public static UnixTimeStampConverter UnixTimeStampConverterSeconds { get; } = new();
+    public static IPAddressConverter IPAddressConverter { get; } = new();
+    public static IPEndPointConverter IPEndPointConverter { get; } = new();
+
+    #endregion
 }

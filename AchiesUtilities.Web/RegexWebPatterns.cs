@@ -4,8 +4,7 @@ namespace AchiesUtilities.Web;
 
 public class RegexWebPatterns
 {
-    [RegexPattern]
-    public static readonly string DomainNamePattern =
+    [RegexPattern] public static readonly string DomainNamePattern =
         @"(?!-)(?:[A-Za-z0-9]{1,63}(?:-[A-Za-z0-9]{1,62})?\.)+[A-Za-z]{2,63}";
 
     [RegexPattern] public static readonly string IPv4Pattern =

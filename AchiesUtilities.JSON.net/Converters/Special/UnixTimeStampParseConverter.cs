@@ -8,12 +8,13 @@ namespace AchiesUtilities.Newtonsoft.JSON.Converters.Special;
 [PublicAPI]
 public class UnixTimeStampParseConverter : StructJsonConverter<UnixTimeStamp>
 {
-    protected override void WriteValue(JsonWriter writer, UnixTimeStamp value)
+    protected override void WriteValue(JsonWriter writer, UnixTimeStamp value, JsonSerializer serializer)
     {
         writer.WriteValue(value.Seconds);
     }
 
-    protected override UnixTimeStamp ParseValue(JsonReader reader)
+    protected override UnixTimeStamp ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         try
         {
