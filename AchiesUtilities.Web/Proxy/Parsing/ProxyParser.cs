@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.Authentication;
 using System.Text.RegularExpressions;
 using AchiesUtilities.Extensions;
 using JetBrains.Annotations;
@@ -13,8 +12,9 @@ public class ProxyParser
     public static ProxyParser Default => ProxyDefaultFormats.UniversalColonParser;
 
     /// <summary>
-    /// Recommended to use <see langword="true" /> to avoid accidental usage of HTTPS proxies, which are often not supported.
-    /// Default is <see langword="true" />
+    ///     Recommended to use <see langword="true" /> to avoid accidental usage of HTTPS proxies, which are often not
+    ///     supported.
+    ///     Default is <see langword="true" />
     /// </summary>
     public static bool UseOnlyHTTP { get; set; } = true;
 

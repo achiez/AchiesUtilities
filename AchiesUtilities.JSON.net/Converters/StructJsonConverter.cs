@@ -59,5 +59,7 @@ public abstract class StructJsonConverter<T> : JsonConverter where T : struct
     }
 
     protected abstract void WriteValue(JsonWriter writer, T value, JsonSerializer serializer);
-    protected abstract T ParseValue(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer);
+
+    protected abstract T ParseValue(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer);
 }

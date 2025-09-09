@@ -3,10 +3,41 @@ using JetBrains.Annotations;
 
 namespace AchiesUtilities.Web.Proxy;
 
+/// <summary>
+///     Represents a dynamic proxy implementation of <see cref="IWebProxy" /> that allows
+///     changing proxy configuration on the fly without recreating or disposing the underlying
+///     <see cref="HttpClientHandler" /> or <see cref="SocketsHttpHandler" />.
+/// </summary>
+/// <remarks>
+///     By design, <see cref="HttpClientHandler.Proxy" /> becomes immutable after the first request,
+///     which prevents changing proxy settings at runtime. <see cref="DynamicProxy" /> bypasses this
+///     limitation by acting as an indirection layer: <see cref="ProxyData" /> can be reassigned
+///     at any time through <see cref="SetData" />, and the proxy address or credentials will be updated
+///     transparently.
+///     Internally, it uses a custom <see cref="ICredentials" /> implementation (<c>ProxyCredentials</c>)
+///     to avoid .NET credential caching. This makes it possible to reuse the same proxy server
+///     with different credentials.
+/// </remarks>
+/// <example>
+///     Typical usage with <see cref="HttpClientHandler" />:
+///     <code>
+/// var proxy = new DynamicProxy(new ProxyData("http://my.proxy:8080", "user", "pass"));
+/// var handler = new HttpClientHandler
+/// {
+///     Proxy = proxy,
+///     UseProxy = true
+/// };
+/// 
+/// var client = new HttpClient(handler);
+/// 
+/// // Later, update proxy data without recreating the handler:
+/// proxy.SetData(new ProxyData("http://my.proxy:8080", "newUser", "newPass"));
+/// </code>
+/// </example>
 [PublicAPI]
-public class DynamicProxy : IWebProxy
+public class DynamicProxy : IDynamicProxy
 {
-    public Uri? Address { get; private set; }
+    public Uri? Address { get; protected set; }
 
     public ProxyData? Data
     {
@@ -14,7 +45,7 @@ public class DynamicProxy : IWebProxy
         set => SetData(value);
     }
 
-    public HashSet<string> BypassHosts { get; init; } = new();
+    public HashSet<string> BypassHosts { get; init; } = [];
 
     /// <summary>
     ///     Property is readonly
@@ -33,6 +64,15 @@ public class DynamicProxy : IWebProxy
         SetData(data);
     }
 
+    public DynamicProxy()
+    {
+    }
+
+    public virtual ProxyData? GetData()
+    {
+        return Data;
+    }
+
     public void SetData(ProxyData? data)
     {
         _data = data;
@@ -41,8 +81,6 @@ public class DynamicProxy : IWebProxy
             Address = null;
             return;
         }
-
-        ;
 
         var address = _data.ToString();
         Address = new Uri(address);
@@ -56,65 +94,18 @@ public class DynamicProxy : IWebProxy
         }
     }
 
-    public Uri? GetProxy(Uri destination)
+    public virtual Uri? GetProxy(Uri destination)
     {
         return IsBypassed(destination) ? destination : Address;
     }
 
-    public bool IsBypassed(Uri host)
+    public virtual bool IsBypassed(Uri host)
     {
         return BypassHosts.Contains(host.Host);
     }
 
-    public void AddToBypass(Uri host)
+    public virtual void AddToBypass(Uri host)
     {
         BypassHosts.Add(host.Host);
-    }
-}
-
-internal class ProxyCredentials : ICredentials
-{
-    private NetworkCredential Credential => _credential ??= new NetworkCredential(_username, _password);
-    private NetworkCredential? _credential;
-    private bool _isSet;
-    private string? _password;
-    private string? _username;
-
-    public ProxyCredentials()
-    {
-    }
-
-    public ProxyCredentials(string? username, string? password)
-    {
-        if (username != null && password != null)
-        {
-            _isSet = true;
-            _username = username;
-            _password = password;
-        }
-    }
-
-    public void Set(string username, string password)
-    {
-        if (username != _username || password != _password)
-        {
-            _credential = null;
-        }
-
-        _username = username;
-        _password = password;
-        _isSet = true;
-    }
-
-    public void Reset()
-    {
-        _username = null;
-        _password = null;
-        _isSet = false;
-    }
-
-    public NetworkCredential? GetCredential(Uri uri, string authType)
-    {
-        return _isSet ? Credential : null;
     }
 }
